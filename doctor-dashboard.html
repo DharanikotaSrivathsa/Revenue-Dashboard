@@ -1,0 +1,3219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doctor Performance & Revenue Intelligence</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #bfdbfe;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --teal-600: #0d9488;
+      --teal-50: #f0fdfa;
+      --teal-border: #99f6e4;
+      --emerald-600: #059669;
+      --emerald-50: #ecfdf5;
+      --amber-600: #d97706;
+      --amber-50: #fffbeb;
+      --rose-600: #e11d48;
+      --rose-50: #fff1f2;
+      --purple-600: #7c3aed;
+      --purple-50: #f5f3ff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+      --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f1f5f9;
+      color: var(--slate-900);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation / App Bar */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.35);
+    }
+    h1 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 2px;
+    }
+    header p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #cbd5e1;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    .status-dot.standby {
+      background: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    main {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    /* SECTION CONTAINERS */
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .section-card:hover {
+      box-shadow: var(--shadow);
+    }
+    .section-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title svg {
+      color: var(--primary);
+    }
+    .section-desc {
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+    .section-body {
+      padding: 18px 20px;
+    }
+
+    /* FILTER SECTION */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-600);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .field-group input, .field-group select {
+      width: 100%;
+      height: 38px;
+      padding: 0 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-size: 13px;
+      color: var(--slate-800);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field-group input:focus, .field-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 38px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.25);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 8px rgba(37,99,235,0.3);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #fff;
+      border-color: #cbd5e1;
+      color: var(--slate-700);
+    }
+    .btn-secondary:hover {
+      background: var(--slate-100);
+      color: var(--slate-900);
+    }
+    .btn-outline-primary {
+      background: #fff;
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .btn-outline-primary:hover {
+      background: var(--primary-light);
+    }
+    .btn-sm {
+      height: 30px;
+      padding: 0 11px;
+      font-size: 11.5px;
+    }
+
+    /* Filter Presets Bar */
+    .filter-presets {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--slate-200);
+      flex-wrap: wrap;
+    }
+    .preset-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .preset-chip {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      color: var(--slate-700);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .preset-chip:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    /* Active Filter Summary Bar */
+    .active-filters-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--primary-light);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--primary-border);
+      font-size: 12px;
+      color: var(--primary);
+      flex-wrap: wrap;
+    }
+    .active-filter-tag {
+      background: #fff;
+      border: 1px solid var(--primary-border);
+      color: var(--slate-800);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .active-filter-tag span.remove-tag {
+      color: var(--slate-400);
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .active-filter-tag span.remove-tag:hover {
+      color: var(--rose-600);
+    }
+
+    /* EMPTY / PROMPT STATE (Shown when filters not applied yet) */
+    .empty-state-section {
+      background: #fff;
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--radius-lg);
+      padding: 65px 24px;
+      text-align: center;
+      margin: 15px 0 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .empty-icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 32px;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.15);
+    }
+    .empty-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 8px;
+    }
+    .empty-subtext {
+      max-width: 580px;
+      margin: 0 auto 22px;
+      color: var(--slate-500);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+    .empty-tips {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 22px;
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+    .empty-tips div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .empty-tips svg {
+      color: var(--teal-600);
+      flex-shrink: 0;
+    }
+    .quick-start-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* DASHBOARD CONTENT CONTAINER */
+    #dashboard-content {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* INSIGHTS / ALERT RIBBON */
+    .insights-ribbon {
+      background: linear-gradient(90deg, #f8fafc, #eff6ff);
+      border: 1px solid var(--primary-border);
+      border-left: 5px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .insights-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .insight-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .insight-text {
+      font-size: 12.5px;
+      color: var(--slate-700);
+    }
+    .insight-text strong {
+      color: var(--slate-900);
+    }
+    .insight-metrics {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .insight-metric-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--slate-600);
+    }
+    .insight-metric-item b {
+      color: var(--slate-900);
+    }
+
+    /* KPI METRICS SECTION */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-top: 3px solid transparent;
+    }
+    .kpi-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .kpi-card.active-kpi {
+      border-color: var(--primary);
+      background: #fbfdff;
+    }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .kpi-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .kpi-icon-pill {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .kpi-val {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--slate-500);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .kpi-trend {
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .kpi-trend.up { color: var(--emerald-600); }
+    .kpi-trend.warn { color: var(--amber-600); }
+    .kpi-trend.down { color: var(--rose-600); }
+
+    /* TAB NAVIGATION BAR */
+    .tabs-wrapper {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 6px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      overflow-x: auto;
+    }
+    .tab-list {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-list::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--slate-600);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      background: var(--slate-100);
+      color: var(--slate-900);
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.25);
+    }
+    .tab-btn .badge-pill {
+      background: rgba(0,0,0,0.1);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+    .tab-btn.active .badge-pill {
+      background: rgba(255,255,255,0.25);
+    }
+    .tab-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* TAB PANELS / PAGES */
+    .tab-page {
+      display: none;
+    }
+    .tab-page.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    /* GRIDS & LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .grid-65-35 {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* INTERACTIVE CHARTS & VISUALIZATIONS */
+    .chart-container {
+      position: relative;
+      width: 100%;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .chart-header h4 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+    .chart-controls {
+      display: flex;
+      gap: 6px;
+    }
+    .chart-toggle-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--slate-200);
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--slate-600);
+    }
+    .chart-toggle-btn.active {
+      background: var(--slate-800);
+      color: #fff;
+      border-color: var(--slate-800);
+    }
+
+    /* SVG Trends */
+    .svg-chart-wrap {
+      width: 100%;
+      height: 220px;
+      position: relative;
+    }
+    .svg-chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      z-index: 50;
+      display: none;
+      transform: translate(-50%, -115%);
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .chart-tooltip .tt-date {
+      color: #94a3b8;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+    .chart-tooltip .tt-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 0;
+    }
+    .chart-tooltip .tt-val {
+      font-weight: 700;
+    }
+
+    /* Interactive Donut */
+    .donut-layout {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 10px 0;
+    }
+    .donut-visual-box {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+    .donut-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    .donut-center-info {
+      position: absolute;
+      inset: 28px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+    .donut-center-info .val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.02em;
+    }
+    .donut-center-info .lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--slate-500);
+      text-transform: uppercase;
+    }
+    .donut-legend-table {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .donut-legend-item:hover, .donut-legend-item.active {
+      background: var(--slate-50);
+      border-color: var(--slate-200);
+    }
+    .legend-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+
+    /* Progress & Bar List */
+    .bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 90px;
+      gap: 12px;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .bar-row:hover {
+      background: var(--slate-50);
+    }
+    .bar-label {
+      font-weight: 600;
+      color: var(--slate-700);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bar-track {
+      height: 10px;
+      background: var(--slate-100);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .bar-value {
+      font-weight: 700;
+      text-align: right;
+      color: var(--slate-900);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* METRIC PAIRS */
+    .metric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--slate-100);
+      font-size: 12.5px;
+    }
+    .metric-item:last-child {
+      border-bottom: none;
+    }
+    .metric-key {
+      color: var(--slate-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .metric-val {
+      font-weight: 700;
+      color: var(--slate-900);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* INTERACTIVE DATA TABLE CONTROLS */
+    .table-toolbar {
+      padding: 12px 16px;
+      background: var(--slate-50);
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .table-search-box {
+      display: flex;
+      align-items: center;
+      position: relative;
+      min-width: 260px;
+    }
+    .table-search-box input {
+      width: 100%;
+      height: 34px;
+      padding: 0 12px 0 32px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      background: #fff;
+    }
+    .table-search-box input:focus {
+      border-color: var(--primary);
+    }
+    .table-search-icon {
+      position: absolute;
+      left: 10px;
+      color: var(--slate-400);
+      pointer-events: none;
+    }
+    .table-filter-chips {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .table-chip {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 14px;
+      border: 1px solid var(--slate-200);
+      background: #fff;
+      color: var(--slate-600);
+      cursor: pointer;
+    }
+    .table-chip.active {
+      background: var(--slate-800);
+      color: #fff;
+      border-color: var(--slate-800);
+    }
+    .table-info-counter {
+      font-size: 11.5px;
+      color: var(--slate-500);
+    }
+
+    /* MODERN DATA TABLE */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      background: #fff;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    table.data-table th {
+      background: #f8fafc;
+      color: var(--slate-600);
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--slate-200);
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    table.data-table th:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+    table.data-table th .sort-icon {
+      margin-left: 4px;
+      font-size: 10px;
+      opacity: 0.6;
+    }
+    table.data-table th.sorted-asc .sort-icon,
+    table.data-table th.sorted-desc .sort-icon {
+      opacity: 1;
+      color: var(--primary);
+    }
+    table.data-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid #edf2f7;
+      color: var(--slate-800);
+    }
+    table.data-table tbody tr {
+      transition: background 0.12s ease;
+    }
+    table.data-table tbody tr:hover {
+      background: #f8fafc;
+    }
+    table.data-table tbody tr.clickable-row {
+      cursor: pointer;
+    }
+    table.data-table tbody tr.clickable-row:hover {
+      background: #f0f7ff;
+    }
+    .money-cell {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .bold-cell {
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    /* BADGES & STATUS PILLS */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-pill.ok {
+      background: var(--emerald-50);
+      color: var(--emerald-600);
+      border: 1px solid #a7f3d0;
+    }
+    .status-pill.warn {
+      background: var(--amber-50);
+      color: var(--amber-600);
+      border: 1px solid #fde68a;
+    }
+    .status-pill.bad {
+      background: var(--rose-50);
+      color: var(--rose-600);
+      border: 1px solid #fecdd3;
+    }
+    .status-pill.neutral {
+      background: var(--slate-100);
+      color: var(--slate-600);
+      border: 1px solid var(--slate-200);
+    }
+    .dept-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* TABLE PAGINATION FOOTER */
+    .table-footer {
+      padding: 10px 16px;
+      background: #fff;
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .page-btn {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 6px;
+      border: 1px solid var(--slate-200);
+      background: #fff;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--slate-700);
+    }
+    .page-btn:hover:not(:disabled) {
+      background: var(--slate-100);
+    }
+    .page-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* SLIDE-OUT DETAIL DRAWER / MODAL */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(2px);
+      z-index: 90;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .drawer-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+    .drawer-pane {
+      position: fixed;
+      top: 0;
+      right: -560px;
+      width: 540px;
+      max-width: 95vw;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.25);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drawer-pane.active {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 18px 24px;
+      background: var(--slate-900);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-title-group h3 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .drawer-title-group p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .close-drawer-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: background 0.15s;
+    }
+    .close-drawer-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    .drawer-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .drawer-section {
+      margin-bottom: 22px;
+    }
+    .drawer-section h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-500);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    /* ENCOUNTER RECEIPT MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 110;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-dialog {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      max-width: 580px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2);
+      overflow: hidden;
+      animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      padding: 16px 20px;
+      background: var(--slate-900);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-body { padding: 20px; max-height: 80vh; overflow-y: auto; }
+    .receipt-box {
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--slate-50);
+      font-size: 12.5px;
+    }
+
+    /* Notice & Footnotes */
+    .note-box {
+      padding: 12px 16px;
+      background: var(--amber-50);
+      border: 1px solid #fef3c7;
+      border-left: 4px solid var(--amber-600);
+      border-radius: var(--radius-sm);
+      color: #92400e;
+      font-size: 12px;
+      margin-top: 14px;
+    }
+    .page-footer {
+      color: var(--slate-500);
+      font-size: 11.5px;
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px solid var(--slate-200);
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 1200px) {
+      .filter-grid {
+        grid-template-columns: repeat(3, 1fr) auto;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-65-35 {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 800px) {
+      main { padding: 14px; }
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .donut-layout { flex-direction: column; }
+    }
+    @media (max-width: 500px) {
+      .filter-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .header-actions { display: none; }
+    }
+
+    /* PRINT STYLES */
+    @media print {
+      header, .filter-section, .tabs-wrapper, .table-toolbar, .table-footer, .filter-presets, .active-filters-bar {
+        display: none !important;
+      }
+      body, main { background: #fff; padding: 0; max-width: 100%; }
+      .section-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+      .tab-page { display: block !important; margin-bottom: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header>
+    <div class="brand-group">
+      <div class="logo-badge">⚕️</div>
+      <div>
+        <h1>Doctor Performance & Revenue Intelligence</h1>
+        <p>Interactive Clinical Revenue, Practice Analytics & Collection Accounting</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="status-badge" id="system-status-badge">
+        <span class="status-dot standby" id="system-status-dot"></span>
+        <span id="system-status-text">Standby · Awaiting Filters</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="exportCurrentCSV()" id="export-csv-btn" title="Export CSV" style="display:none;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="window.print()" title="Print Dashboard">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        Print
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- SECTION 1: SEARCH & FILTER CONTROL CENTER -->
+    <div class="section-card filter-section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+            Analytics Query & Filter Console
+          </div>
+          <div class="section-desc">Select operational criteria below and click <strong>Apply Filters</strong> to compute performance metrics</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="applyFilters()" id="main-apply-btn">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Apply Filters
+          </button>
+          <button class="btn btn-secondary" onclick="resetFilters()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="filter-grid">
+          <div class="field-group">
+            <label for="from">From Date</label>
+            <input type="date" id="from" value="2026-10-01">
+          </div>
+          <div class="field-group">
+            <label for="to">To Date</label>
+            <input type="date" id="to" value="2026-10-29">
+          </div>
+          <div class="field-group">
+            <label for="facility">Facility / Center</label>
+            <select id="facility">
+              <option value="All">All Facilities (3)</option>
+              <option value="Central Hospital">Central Hospital</option>
+              <option value="North Clinic">North Clinic</option>
+              <option value="South Clinic">South Clinic</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="dept">Department</label>
+            <select id="dept">
+              <option value="All">All Departments (5)</option>
+              <option value="General Medicine">General Medicine</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Gynecology">Gynecology</option>
+              <option value="Dermatology">Dermatology</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="doctor">Doctor</label>
+            <select id="doctor">
+              <option value="All">All Doctors (6)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="pay">Payment Status</label>
+            <select id="pay">
+              <option value="All">All Statuses</option>
+              <option value="Paid">Fully Paid</option>
+              <option value="Partial">Partial Payment</option>
+              <option value="Unpaid">Unpaid / Outstanding</option>
+            </select>
+          </div>
+          <div class="field-group" style="justify-content:flex-end;">
+            <button class="btn btn-outline-primary" style="width:100%" onclick="applyFilters()">
+              ⚡ Run Query
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Filter Presets -->
+        <div class="filter-presets">
+          <span class="preset-label">Quick Presets:</span>
+          <span class="preset-chip" onclick="setPreset('oct2026')">📅 Full Month (Oct 1–29)</span>
+          <span class="preset-chip" onclick="setPreset('central')">🏥 Central Hospital</span>
+          <span class="preset-chip" onclick="setPreset('cardiology')">❤️ Cardiology Specialty</span>
+          <span class="preset-chip" onclick="setPreset('unpaid')">⚠️ Outstanding Only</span>
+          <span class="preset-chip" onclick="setPreset('last7')">⚡ Recent 7 Days</span>
+        </div>
+
+        <!-- Active Applied Filters Bar -->
+        <div class="active-filters-bar" id="active-filters-bar">
+          <strong>Applied Filter Scope:</strong>
+          <span id="active-filter-tags" style="display:flex;gap:6px;flex-wrap:wrap;"></span>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto;height:24px;font-size:10.5px;" onclick="resetFilters()">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: EMPTY STATE / PROMPT SECTION (Shown before user applies filters) -->
+    <div class="empty-state-section" id="empty-state">
+      <div class="empty-icon-wrap">
+        📊
+      </div>
+      <h2 class="empty-title">Ready to Analyze Doctor Performance & Revenue</h2>
+      <p class="empty-subtext">
+        To prevent loading heavy unnecessary data and to ensure accurate reporting, performance metrics are rendered only after you configure your parameters and apply filters.
+      </p>
+
+      <div class="empty-tips">
+        <div>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Filter by specific doctor, department, hospital branch, or date window.
+        </div>
+        <div>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Reconcile gross billings, refunds, pharmacy returns, and collections in one interactive view.
+        </div>
+        <div>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Click any doctor or patient row in the generated report to inspect full encounter records.
+        </div>
+      </div>
+
+      <div class="quick-start-row">
+        <button class="btn btn-primary" onclick="applyFilters()" style="padding:0 24px;height:42px;font-size:14px;">
+          ⚡ Load Report with Selected Filters
+        </button>
+        <button class="btn btn-secondary" onclick="setPreset('oct2026')" style="height:42px;font-size:13px;">
+          📅 Load October 2026 All Data
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: INTERACTIVE DASHBOARD (Shown ONLY after filters are applied) -->
+    <div id="dashboard-content">
+
+      <!-- SMART INSIGHTS RIBBON -->
+      <div class="insights-ribbon" id="insights-ribbon">
+        <div class="insights-left">
+          <span class="insight-badge">Practice Insights</span>
+          <div class="insight-text" id="insight-summary-text">
+            Loading analytics summary...
+          </div>
+        </div>
+        <div class="insight-metrics" id="insight-metrics-pills">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- SECTION 4: EXECUTIVE KPI CARDS -->
+      <div class="kpi-grid" id="kpi-cards-container">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- SECTION 5: DOMAIN TABS (Clean Navigation) -->
+      <div class="tabs-wrapper">
+        <div class="tab-list" id="main-tabs">
+          <!-- Dynamically populated tabs -->
+        </div>
+        <div class="tab-actions">
+          <button class="btn btn-secondary btn-sm" onclick="exportCurrentCSV()">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT PAGES -->
+      <div id="tab-pages-container">
+
+        <!-- TAB 0: OVERVIEW -->
+        <div class="tab-page active" id="tab-page-0">
+          <!-- Visual Analytics Row 1 -->
+          <div class="grid-65-35">
+            <div class="section-card">
+              <div class="section-header">
+                <div>
+                  <div class="section-title">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                    Daily Revenue & Collection Trajectory
+                  </div>
+                  <div class="section-desc">Interactive timeline · Hover data points for daily breakdown</div>
+                </div>
+                <div class="chart-controls">
+                  <span class="status-pill ok" id="trend-collection-rate-pill">Rate: 0%</span>
+                </div>
+              </div>
+              <div class="section-body">
+                <div class="svg-chart-wrap" id="trend-chart-box">
+                  <!-- SVG line chart inserted here -->
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-header">
+                <div>
+                  <div class="section-title">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/></svg>
+                    Service Revenue Contribution
+                  </div>
+                  <div class="section-desc">Net service distribution share</div>
+                </div>
+              </div>
+              <div class="section-body">
+                <div id="service-donut-box">
+                  <!-- Interactive Donut chart -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Analytics Row 2 -->
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div>
+                  <div class="section-title">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    Doctor Performance Leaderboard
+                  </div>
+                  <div class="section-desc">Net revenue ranking · Click any doctor for deep-dive drawer</div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="switchTab('Doctor-wise')">View Full Table →</button>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="doctor-ranking-bars">
+                  <!-- Dynamic bar list -->
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-header">
+                <div>
+                  <div class="section-title">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Cash Realization & Reconciliation
+                  </div>
+                  <div class="section-desc">Gross charges vs deductions vs net collected</div>
+                </div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="financial-reconciliation-metrics">
+                  <!-- Dynamic financial metrics -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Top Doctor Table -->
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                  Top Practitioners by Revenue Velocity
+                </div>
+                <div class="section-desc">Interactive rows · Click a row to open doctor scorecard</div>
+              </div>
+            </div>
+            <div id="overview-doctor-table-wrap">
+              <!-- Insert table -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 1: DOCTOR-WISE SCORECARDS -->
+        <div class="tab-page" id="tab-page-1">
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Doctor Performance Matrix & Attribution</div>
+                <div class="section-desc">Compare revenue attribution, patient volume, collections, and deductions per physician</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search doctor, department, facility..." oninput="handleTableSearch(1, this.value)">
+              </div>
+              <div class="table-info-counter" id="table-info-1">Showing all doctors</div>
+            </div>
+            <div class="table-responsive" id="table-wrap-1"></div>
+            <div class="table-footer" id="table-footer-1"></div>
+          </div>
+        </div>
+
+        <!-- TAB 2: CONSULTATIONS -->
+        <div class="tab-page" id="tab-page-2">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Consultation Charges Breakdown</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="consult-bar-list"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Attendance & Conversion Metrics</div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="consult-metrics-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Consultation Ledger</div>
+                <div class="section-desc">Doctor encounter records with fee adjustments</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search patient ID, doctor name, status..." oninput="handleTableSearch(2, this.value)">
+              </div>
+              <div class="table-filter-chips">
+                <span class="table-chip active" onclick="setSubFilter(2, 'all')">All</span>
+                <span class="table-chip" onclick="setSubFilter(2, 'Completed')">Completed</span>
+                <span class="table-chip" onclick="setSubFilter(2, 'Cancelled')">Cancelled</span>
+                <span class="table-chip" onclick="setSubFilter(2, 'No-show')">No-show</span>
+              </div>
+              <div class="table-info-counter" id="table-info-2"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-2"></div>
+            <div class="table-footer" id="table-footer-2"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3: LAB INVESTIGATIONS -->
+        <div class="tab-page" id="tab-page-3">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Laboratory Financial Breakdown</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="lab-bar-list"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Diagnostics Order Workflow</div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="lab-metrics-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Lab Orders Attributed to Doctors</div>
+                <div class="section-desc">Doctor referrals, investigation counts, discounts, and lab refunds</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search ordering doctor, patient, status..." oninput="handleTableSearch(3, this.value)">
+              </div>
+              <div class="table-filter-chips">
+                <span class="table-chip active" onclick="setSubFilter(3, 'all')">All Orders</span>
+                <span class="table-chip" onclick="setSubFilter(3, 'Completed')">Completed</span>
+                <span class="table-chip" onclick="setSubFilter(3, 'Pending')">Pending</span>
+                <span class="table-chip" onclick="setSubFilter(3, 'Cancelled')">Cancelled</span>
+              </div>
+              <div class="table-info-counter" id="table-info-3"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-3"></div>
+            <div class="table-footer" id="table-footer-3"></div>
+          </div>
+        </div>
+
+        <!-- TAB 4: PHARMACY -->
+        <div class="tab-page" id="tab-page-4">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Pharmacy Revenue & Returns</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="pharm-bar-list"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Dispensing & Fulfillment Metrics</div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="pharm-metrics-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Prescription & Dispensing Ledger</div>
+                <div class="section-desc">Prescribed medicines, dispensing status, returns, and sales realization</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search doctor, patient ID, dispensing status..." oninput="handleTableSearch(4, this.value)">
+              </div>
+              <div class="table-filter-chips">
+                <span class="table-chip active" onclick="setSubFilter(4, 'all')">All</span>
+                <span class="table-chip" onclick="setSubFilter(4, 'Dispensed')">Dispensed</span>
+                <span class="table-chip" onclick="setSubFilter(4, 'Partial')">Partial</span>
+                <span class="table-chip" onclick="setSubFilter(4, 'Returned')">Returned</span>
+              </div>
+              <div class="table-info-counter" id="table-info-4"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-4"></div>
+            <div class="table-footer" id="table-footer-4"></div>
+          </div>
+        </div>
+
+        <!-- TAB 5: PROCEDURES -->
+        <div class="tab-page" id="tab-page-5">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Clinical Procedure Financials</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="proc-bar-list"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Surgical / Minor Procedure Yield</div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="proc-metrics-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Procedure Performance Log</div>
+                <div class="section-desc">Surgeries and OPD procedures attributed to performing surgeons</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search surgeon, patient, procedure status..." oninput="handleTableSearch(5, this.value)">
+              </div>
+              <div class="table-filter-chips">
+                <span class="table-chip active" onclick="setSubFilter(5, 'all')">All</span>
+                <span class="table-chip" onclick="setSubFilter(5, 'Completed')">Completed</span>
+                <span class="table-chip" onclick="setSubFilter(5, 'Scheduled')">Scheduled</span>
+                <span class="table-chip" onclick="setSubFilter(5, 'Cancelled')">Cancelled</span>
+              </div>
+              <div class="table-info-counter" id="table-info-5"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-5"></div>
+            <div class="table-footer" id="table-footer-5"></div>
+          </div>
+        </div>
+
+        <!-- TAB 6: COLLECTIONS & RETURNS -->
+        <div class="tab-page" id="tab-page-6">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Collections by Payment Method</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="paymode-bar-list"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Collections by Service Source</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="paysource-bar-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="note-box">
+            <strong>Accounting Clarification:</strong> Each row below connects directly to the itemized source invoice (consultation, lab investigation, medication, or procedure). Collections indicate cash inflow, not newly created revenue.
+          </div>
+          <div class="section-card" style="margin-top:14px;">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Itemized Invoice & Collection Transactions</div>
+                <div class="section-desc">Searchable ledger of payments posted against doctor encounters</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search reference, doctor, patient, payment method..." oninput="handleTableSearch(6, this.value)">
+              </div>
+              <div class="table-filter-chips">
+                <span class="table-chip active" onclick="setSubFilter(6, 'all')">All</span>
+                <span class="table-chip" onclick="setSubFilter(6, 'Paid')">Paid</span>
+                <span class="table-chip" onclick="setSubFilter(6, 'Partial')">Partial</span>
+                <span class="table-chip" onclick="setSubFilter(6, 'Unpaid')">Unpaid</span>
+              </div>
+              <div class="table-info-counter" id="table-info-6"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-6"></div>
+            <div class="table-footer" id="table-footer-6"></div>
+          </div>
+        </div>
+
+        <!-- TAB 7: PATIENTS -->
+        <div class="tab-page" id="tab-page-7">
+          <div class="grid-2">
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Patient Demographics & Retention Mix</div>
+              </div>
+              <div class="section-body">
+                <div class="bar-list" id="patient-mix-bars"></div>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">Patient Financial Summary</div>
+              </div>
+              <div class="section-body">
+                <div class="metric-list" id="patient-metrics-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Patient Account & Visit Ledger</div>
+                <div class="section-desc">Unique patients seen, latest treating doctor, and balance receivables</div>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <div class="table-search-box">
+                <svg class="table-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Search patient ID, patient name, doctor..." oninput="handleTableSearch(7, this.value)">
+              </div>
+              <div class="table-info-counter" id="table-info-7"></div>
+            </div>
+            <div class="table-responsive" id="table-wrap-7"></div>
+            <div class="table-footer" id="table-footer-7"></div>
+          </div>
+        </div>
+
+      </div><!-- /tab-pages-container -->
+
+    </div><!-- /dashboard-content -->
+
+    <!-- FLOATING CHART TOOLTIP -->
+    <div class="chart-tooltip" id="chart-tooltip"></div>
+
+    <!-- SLIDE-OVER DOCTOR PROFILE DRAWER -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDoctorDrawer()"></div>
+    <div class="drawer-pane" id="doctor-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <h3 id="drawer-doctor-name">Dr. Name</h3>
+          <p id="drawer-doctor-sub">Department · Facility</p>
+        </div>
+        <button class="close-drawer-btn" onclick="closeDoctorDrawer()">✕</button>
+      </div>
+      <div class="drawer-body" id="drawer-body-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- ENCOUNTER RECEIPT MODAL -->
+    <div class="modal-overlay" id="encounter-modal" onclick="closeEncounterModal(event)">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modal-title">Encounter Receipt</h3>
+          <button class="close-drawer-btn" onclick="closeEncounterModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body-content">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      Doctor Performance & Revenue Intelligence System · Hospital Management Dashboard v2.5 · Configured for Multi-Doctor Practice Analytics
+    </div>
+  </main>
+
+  <script>
+    /* =====================================================================
+       1. DATA ENGINE & CORE REPOSITORIES
+       ===================================================================== */
+    const docs = [
+      ["Dr. Asha Rao", "General Medicine", "Central Hospital"],
+      ["Dr. Rahul Varma", "Cardiology", "Central Hospital"],
+      ["Dr. Meera Nair", "Orthopedics", "North Clinic"],
+      ["Dr. Kiran Reddy", "Gynecology", "South Clinic"],
+      ["Dr. Priya Shah", "Dermatology", "North Clinic"],
+      ["Dr. Vivek Kumar", "General Medicine", "South Clinic"]
+    ];
+
+    const patients = Array.from({ length: 90 }, (_, i) => ({
+      id: "PT" + (1001 + i),
+      name: ["Ananya Sharma", "Rohit Kapoor", "Sana Mirza", "Arjun Patel", "Divya Raghavan", "Manoj Tiwari", "Neha Verma", "Karthik Ganesan"][i % 8],
+      fresh: i % 3 === 0
+    }));
+
+    const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = a => a[rnd(0, a.length - 1)];
+    const money = n => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n || 0);
+    const num = n => new Intl.NumberFormat("en-IN").format(n || 0);
+    const sum = (a, k) => a.reduce((s, x) => s + (x[k] || 0), 0);
+    const unique = (a, k) => new Set(a.map(x => x[k])).size;
+
+    // Generate full clinical transactions dataset
+    let masterRows = [];
+    let txId = 1;
+
+    docs.forEach(d => {
+      // 30 encounters per doctor for rich analysis
+      for (let i = 0; i < 30; i++) {
+        let p = pick(patients);
+        let day = rnd(1, 29);
+        let date = `2026-10-${String(day).padStart(2, "0")}`;
+        let cs = pick(["Completed", "Completed", "Completed", "Cancelled", "No-show"]);
+        let ls = rnd(0, 1) ? pick(["Completed", "Pending", "Cancelled"]) : "Not ordered";
+        let ps = pick(["Dispensed", "Dispensed", "Partial", "Returned", "No prescription"]);
+        let prs = pick(["Completed", "Completed", "Scheduled", "Cancelled", "Not performed"]);
+
+        let cf = rnd(500, 1200);
+        let lb = ls === "Not ordered" ? 0 : rnd(300, 2800);
+        let ph = ps === "No prescription" ? 0 : rnd(150, 2200);
+        let pr = prs === "Not performed" ? 0 : rnd(800, 4800);
+
+        let cd = Math.random() < 0.12 ? rnd(30, 100) : 0;
+        let ld = Math.random() < 0.12 ? rnd(30, 160) : 0;
+        let pd = Math.random() < 0.10 ? rnd(20, 100) : 0;
+        let prd = Math.random() < 0.10 ? rnd(50, 250) : 0;
+
+        let cr = Math.random() < 0.03 ? rnd(100, 250) : 0;
+        let lr = Math.random() < 0.07 ? rnd(50, Math.max(60, Math.floor(lb * 0.3))) : 0;
+        let ret = ps === "Returned" && ph ? rnd(50, Math.max(60, Math.floor(ph * 0.35))) : 0;
+        let prr = Math.random() < 0.05 && pr ? rnd(50, Math.max(60, Math.floor(pr * 0.25))) : 0;
+
+        let cnet = cs === "Completed" ? Math.max(0, cf - cd - cr) : 0;
+        let lnet = ls === "Completed" ? Math.max(0, lb - ld - lr) : 0;
+        let pnet = ph ? Math.max(0, ph - pd - ret) : 0;
+        let prnet = prs === "Completed" ? Math.max(0, pr - prd - prr) : 0;
+        let net = cnet + lnet + pnet + prnet;
+
+        let rate = pick([1, 1, 1, 0.7, 0.5, 0]);
+        let col = Math.round(net * rate);
+        let ccol = net ? Math.round(col * cnet / net) : 0;
+        let lcol = net ? Math.round(col * lnet / net) : 0;
+        let pcol = net ? Math.round(col * pnet / net) : 0;
+        let prcol = Math.max(0, col - ccol - lcol - pcol);
+
+        masterRows.push({
+          id: "ENC-" + String(txId++).padStart(4, "0"),
+          date,
+          doctor: d[0],
+          dept: d[1],
+          facility: d[2],
+          patient: p.id,
+          patientName: p.name,
+          fresh: p.fresh,
+          cs, cf, cd, cr, cnet, ccol,
+          lab: lb, labCount: lb ? rnd(1, 4) : 0, ls, ld, lr, lnet, lcol,
+          pharm: ph, rx: ph ? 1 : 0, ps, pd, ret, pnet, pcol,
+          procedure: pr, procedureCount: pr ? 1 : 0, prs, prd, prr, prnet, prcol,
+          net,
+          collected: col,
+          outstanding: Math.max(0, net - col),
+          payment: col === net && net > 0 ? "Paid" : col > 0 ? "Partial" : "Unpaid",
+          mode: pick(["Cash", "UPI", "Card", "Insurance", "Bank transfer"])
+        });
+      }
+    });
+
+    // Populate Doctor dropdown options
+    const doctorSelect = document.getElementById("doctor");
+    docs.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d[0];
+      opt.textContent = `${d[0]} (${d[1]})`;
+      doctorSelect.appendChild(opt);
+    });
+
+    /* =====================================================================
+       2. TAB DEFINITIONS & STATE
+       ===================================================================== */
+    const tabs = [
+      { id: "Overview", label: "Executive Overview", icon: "📊" },
+      { id: "Doctor-wise", label: "Doctor Scorecards", icon: "👨‍⚕️" },
+      { id: "Consultations", label: "Consultations", icon: "🩺" },
+      { id: "Lab investigations", label: "Lab Tests", icon: "🔬" },
+      { id: "Pharmacy", label: "Pharmacy & Rx", icon: "💊" },
+      { id: "Procedures", label: "Procedures", icon: "💉" },
+      { id: "Collections & returns", label: "Collections Ledger", icon: "💰" },
+      { id: "Patients", label: "Patient Accounts", icon: "👥" }
+    ];
+
+    let currentTab = "Overview";
+    let hasApplied = false; // "only when the user tries to apply the filters then the data must be shown"
+    let currentFilteredRows = [];
+    let cachedDoctorAgg = [];
+    let cachedTransactions = [];
+    let cachedPatientAgg = [];
+
+    // Table view states (pagination, sorting, subfilter, search)
+    let tableStates = {
+      0: { search: "", sortCol: "net", sortAsc: false, page: 1, pageSize: 6 },
+      1: { search: "", sortCol: "net", sortAsc: false, page: 1, pageSize: 10 },
+      2: { search: "", sortCol: "date", sortAsc: false, page: 1, pageSize: 12, subFilter: "all" },
+      3: { search: "", sortCol: "date", sortAsc: false, page: 1, pageSize: 12, subFilter: "all" },
+      4: { search: "", sortCol: "date", sortAsc: false, page: 1, pageSize: 12, subFilter: "all" },
+      5: { search: "", sortCol: "date", sortAsc: false, page: 1, pageSize: 12, subFilter: "all" },
+      6: { search: "", sortCol: "date", sortAsc: false, page: 1, pageSize: 15, subFilter: "all" },
+      7: { search: "", sortCol: "outstanding", sortAsc: false, page: 1, pageSize: 12 }
+    };
+
+    // Render tab buttons
+    const tabListEl = document.getElementById("main-tabs");
+    tabListEl.innerHTML = tabs.map((t, idx) => `
+      <button class="tab-btn ${idx === 0 ? "active" : ""}" data-tab="${t.id}" onclick="switchTab('${t.id}')">
+        <span>${t.icon}</span> ${t.label}
+      </button>
+    `).join("");
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabId);
+      });
+      const tabIdx = tabs.findIndex(t => t.id === tabId);
+      document.querySelectorAll(".tab-page").forEach((pg, idx) => {
+        pg.classList.toggle("active", idx === tabIdx);
+      });
+      // Scroll smoothly to tab area if user is lower down
+      const tabsWrapper = document.querySelector(".tabs-wrapper");
+      if (tabsWrapper && window.scrollY > tabsWrapper.offsetTop) {
+        tabsWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    /* =====================================================================
+       3. FILTER APPLICATION & EMPTY STATE LOGIC
+       ===================================================================== */
+    function applyFilters() {
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+      const fac = document.getElementById("facility").value;
+      const dep = document.getElementById("dept").value;
+      const doc = document.getElementById("doctor").value;
+      const pay = document.getElementById("pay").value;
+
+      currentFilteredRows = masterRows.filter(x => {
+        return (!from || x.date >= from) &&
+               (!to || x.date <= to) &&
+               (fac === "All" || x.facility === fac) &&
+               (dep === "All" || x.dept === dep) &&
+               (doc === "All" || x.doctor === doc) &&
+               (pay === "All" || x.payment === pay);
+      });
+
+      hasApplied = true;
+
+      // Update UI states
+      document.getElementById("empty-state").style.display = "none";
+      document.getElementById("dashboard-content").style.display = "block";
+      document.getElementById("export-csv-btn").style.display = "inline-flex";
+
+      const statusBadge = document.getElementById("system-status-badge");
+      const statusDot = document.getElementById("system-status-dot");
+      const statusText = document.getElementById("system-status-text");
+      statusDot.className = "status-dot";
+      statusText.textContent = `Filtered · ${currentFilteredRows.length} Encounters`;
+
+      // Active filters bar
+      updateActiveFiltersBar(from, to, fac, dep, doc, pay);
+
+      // Re-render all sections with interactivity
+      computeAggregatesAndRender();
+    }
+
+    function resetFilters() {
+      document.getElementById("from").value = "2026-10-01";
+      document.getElementById("to").value = "2026-10-29";
+      document.getElementById("facility").value = "All";
+      document.getElementById("dept").value = "All";
+      document.getElementById("doctor").value = "All";
+      document.getElementById("pay").value = "All";
+
+      hasApplied = false;
+      document.getElementById("empty-state").style.display = "block";
+      document.getElementById("dashboard-content").style.display = "none";
+      document.getElementById("active-filters-bar").style.display = "none";
+      document.getElementById("export-csv-btn").style.display = "none";
+
+      const statusDot = document.getElementById("system-status-dot");
+      const statusText = document.getElementById("system-status-text");
+      statusDot.className = "status-dot standby";
+      statusText.textContent = "Standby · Awaiting Filters";
+    }
+
+    function setPreset(type) {
+      if (type === "oct2026") {
+        document.getElementById("from").value = "2026-10-01";
+        document.getElementById("to").value = "2026-10-29";
+        document.getElementById("facility").value = "All";
+        document.getElementById("dept").value = "All";
+        document.getElementById("doctor").value = "All";
+        document.getElementById("pay").value = "All";
+      } else if (type === "central") {
+        document.getElementById("facility").value = "Central Hospital";
+        document.getElementById("dept").value = "All";
+        document.getElementById("doctor").value = "All";
+      } else if (type === "cardiology") {
+        document.getElementById("dept").value = "Cardiology";
+        document.getElementById("doctor").value = "All";
+      } else if (type === "unpaid") {
+        document.getElementById("pay").value = "Unpaid";
+      } else if (type === "last7") {
+        document.getElementById("from").value = "2026-10-22";
+        document.getElementById("to").value = "2026-10-29";
+      }
+      applyFilters();
+    }
+
+    function updateActiveFiltersBar(from, to, fac, dep, doc, pay) {
+      const bar = document.getElementById("active-filters-bar");
+      const tagsBox = document.getElementById("active-filter-tags");
+      bar.style.display = "flex";
+
+      let tags = [];
+      if (from || to) tags.push(`Date: ${from || "start"} to ${to || "now"}`);
+      if (fac !== "All") tags.push(`Facility: ${fac}`);
+      if (dep !== "All") tags.push(`Dept: ${dep}`);
+      if (doc !== "All") tags.push(`Doctor: ${doc}`);
+      if (pay !== "All") tags.push(`Payment: ${pay}`);
+
+      if (tags.length === 0) tags.push("All Records (Default Range)");
+
+      tagsBox.innerHTML = tags.map(t => `<span class="active-filter-tag">${t}</span>`).join("");
+    }
+
+    /* =====================================================================
+       4. AGGREGATES & ANALYTICS COMPUTATION
+       ===================================================================== */
+    function computeAggregatesAndRender() {
+      const a = currentFilteredRows;
+      const net = sum(a, "net");
+      const col = sum(a, "collected");
+      const out = sum(a, "outstanding");
+      const refund = sum(a, "cr") + sum(a, "lr") + sum(a, "prr");
+      const returns = sum(a, "ret");
+      const discount = sum(a, "cd") + sum(a, "ld") + sum(a, "pd") + sum(a, "prd");
+      const grossCharges = sum(a, "cf") + sum(a, "lab") + sum(a, "pharm") + sum(a, "procedure");
+      const patientsN = unique(a, "patient");
+      const consultDone = a.filter(x => x.cs === "Completed");
+      const labDone = a.filter(x => x.ls === "Completed");
+      const phDone = a.filter(x => x.ps === "Dispensed");
+      const procDone = a.filter(x => x.prs === "Completed");
+
+      // Doctor-level aggregates
+      cachedDoctorAgg = docs.map(d => {
+        let z = a.filter(x => x.doctor === d[0]);
+        let dNet = sum(z, "net");
+        let dCol = sum(z, "collected");
+        let dOut = sum(z, "outstanding");
+        let dConsultDone = z.filter(x => x.cs === "Completed").length;
+        let dPats = unique(z, "patient");
+        let rate = dNet > 0 ? Math.round((dCol / dNet) * 100) : 0;
+        return {
+          doctor: d[0],
+          department: d[1],
+          facility: d[2],
+          patients: dPats,
+          consults: dConsultDone,
+          consultNet: sum(z, "cnet"),
+          labNet: sum(z, "lnet"),
+          pharmNet: sum(z, "pnet"),
+          procedureNet: sum(z, "prnet"),
+          refunds: sum(z, "cr") + sum(z, "lr") + sum(z, "prr"),
+          returns: sum(z, "ret"),
+          net: dNet,
+          collected: dCol,
+          outstanding: dOut,
+          collectionRate: rate,
+          avgPerPatient: dPats ? Math.round(dNet / dPats) : 0,
+          records: z
+        };
+      }).filter(x => x.records.length > 0).sort((x, y) => y.net - x.net);
+
+      // Itemized collection transaction rows
+      const specs = [
+        { key: "cnet", paid: "ccol", source: "Consultation", prefix: "CONS", icon: "🩺" },
+        { key: "lnet", paid: "lcol", source: "Lab Invoice", prefix: "LAB", icon: "🔬" },
+        { key: "pnet", paid: "pcol", source: "Pharmacy Rx", prefix: "PHARM", icon: "💊" },
+        { key: "prnet", paid: "prcol", source: "Procedure", prefix: "PROC", icon: "💉" }
+      ];
+
+      cachedTransactions = a.flatMap(x => specs.filter(s => (x[s.key] || 0) > 0).map(s => {
+        let invNet = x[s.key];
+        let c = x[s.paid] || 0;
+        let bal = Math.max(0, invNet - c);
+        return {
+          id: s.prefix + "-" + x.id.replace("ENC-", ""),
+          encounter: x.id,
+          date: x.date,
+          doctor: x.doctor,
+          dept: x.dept,
+          patient: x.patient,
+          patientName: x.patientName,
+          source: s.source,
+          icon: s.icon,
+          invoiceNet: invNet,
+          collected: c,
+          outstanding: bal,
+          mode: x.mode,
+          status: c >= invNet ? "Paid" : c > 0 ? "Partial" : "Unpaid"
+        };
+      }));
+
+      // Patient-level aggregates
+      cachedPatientAgg = [...new Set(a.map(x => x.patient))].map(pid => {
+        let z = a.filter(x => x.patient === pid);
+        return {
+          patient: pid,
+          patientName: z[0].patientName,
+          visits: z.length,
+          doctor: z[z.length - 1].doctor,
+          lastVisit: z.map(x => x.date).sort().at(-1),
+          net: sum(z, "net"),
+          collected: sum(z, "collected"),
+          outstanding: sum(z, "outstanding"),
+          fresh: z[0].fresh
+        };
+      }).sort((x, y) => y.outstanding - x.outstanding);
+
+      // 1. Render Smart Insights Ribbon
+      renderInsightsRibbon(a, net, col, out, cachedDoctorAgg);
+
+      // 2. Render KPI cards
+      renderKpis(a, net, col, out, patientsN, consultDone.length);
+
+      // 3. Render Trend line & Donut
+      renderTrendChart(a);
+      renderServiceDonut(a);
+
+      // 4. Render Doctor Leaderboard & Financial Reconciliation
+      renderDoctorLeaderboard(cachedDoctorAgg);
+      renderReconciliationMetrics(grossCharges, discount, refund, returns, net, col, out);
+
+      // 5. Render Overview Doctor Quick Table
+      renderOverviewDoctorTable(cachedDoctorAgg);
+
+      // 6. Render Sub-tabs breakdowns (Consult, Lab, Pharm, Proc, Collections, Patients)
+      renderConsultationSection(a, consultDone);
+      renderLabSection(a, labDone);
+      renderPharmacySection(a, phDone, returns);
+      renderProcedureSection(a, procDone);
+      renderCollectionsSection(a, cachedTransactions);
+      renderPatientsSection(a, cachedPatientAgg);
+
+      // 7. Render Tab 1 (Doctor-wise table)
+      renderDoctorWiseTable(cachedDoctorAgg);
+    }
+
+    /* =====================================================================
+       5. INSIGHTS RIBBON & EXECUTIVE KPIS
+       ===================================================================== */
+    function renderInsightsRibbon(a, net, col, out, docAgg) {
+      const topDoc = docAgg[0];
+      const rate = net > 0 ? Math.round((col / net) * 100) : 0;
+      const summaryText = topDoc 
+        ? `Top earning practitioner: <strong>${topDoc.doctor}</strong> (${topDoc.department}) with <strong>${money(topDoc.net)}</strong> net revenue. Overall cash collection efficiency is currently at <strong>${rate}%</strong>.`
+        : "No records found matching these criteria.";
+
+      document.getElementById("insight-summary-text").innerHTML = summaryText;
+
+      const pills = [
+        `<span class="insight-metric-item">Avg per Patient: <b>${money(unique(a, "patient") ? net / unique(a, "patient") : 0)}</b></span>`,
+        `<span class="insight-metric-item">Outstanding Risk: <b style="color:var(--amber-600)">${money(out)}</b></span>`
+      ];
+      document.getElementById("insight-metrics-pills").innerHTML = pills.join("");
+    }
+
+    function renderKpis(a, net, col, out, patsCount, consultsCount) {
+      const colRate = net > 0 ? Math.round((col / net) * 100) : 0;
+      const kpisData = [
+        {
+          label: "Net Practice Revenue",
+          val: money(net),
+          sub: `<span class="kpi-trend up">↑ Yield</span> after discounts & refunds`,
+          pill: "₹",
+          color: "var(--primary)",
+          clickTab: "Overview"
+        },
+        {
+          label: "Cash Realized",
+          val: money(col),
+          sub: `<span class="kpi-trend up">● ${colRate}%</span> total collection rate`,
+          pill: "✓",
+          color: "var(--teal-600)",
+          clickTab: "Collections & returns"
+        },
+        {
+          label: "Outstanding Balance",
+          val: money(out),
+          sub: `<span class="kpi-trend warn">● ${100 - colRate}%</span> pending receivables`,
+          pill: "⏳",
+          color: "var(--amber-600)",
+          clickTab: "Collections & returns"
+        },
+        {
+          label: "Unique Patients",
+          val: num(patsCount),
+          sub: `Across active clinical specialties`,
+          pill: "👤",
+          color: "var(--slate-700)",
+          clickTab: "Patients"
+        },
+        {
+          label: "Completed Encounters",
+          val: num(consultsCount),
+          sub: `Out of ${a.length} booked visits`,
+          pill: "🩺",
+          color: "var(--purple-600)",
+          clickTab: "Consultations"
+        }
+      ];
+
+      const container = document.getElementById("kpi-cards-container");
+      container.innerHTML = kpisData.map(k => `
+        <div class="kpi-card" onclick="switchTab('${k.clickTab}')" title="Click to view details in ${k.clickTab}">
+          <div class="kpi-top">
+            <span class="kpi-label">${k.label}</span>
+            <span class="kpi-icon-pill" style="background:${k.color}15;color:${k.color}">${k.pill}</span>
+          </div>
+          <div class="kpi-val" style="color:${k.color}">${k.val}</div>
+          <div class="kpi-sub">${k.sub}</div>
+        </div>
+      `).join("");
+    }
+
+    /* =====================================================================
+       6. INTERACTIVE CHARTS (SVG Line with Tooltip & SVG Donut)
+       ===================================================================== */
+    function renderTrendChart(a) {
+      const days = {};
+      a.forEach(x => {
+        if (!days[x.date]) days[x.date] = { net: 0, col: 0, count: 0 };
+        days[x.date].net += x.net;
+        days[x.date].col += x.collected;
+        days[x.date].count++;
+      });
+
+      const dates = Object.keys(days).sort();
+      const wrap = document.getElementById("trend-chart-box");
+
+      if (dates.length < 2) {
+        wrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--slate-400)">Not enough date range points to render timeline trend.</div>`;
+        return;
+      }
+
+      const totalNet = sum(a, "net");
+      const totalCol = sum(a, "collected");
+      const rate = totalNet > 0 ? Math.round((totalCol / totalNet) * 100) : 0;
+      document.getElementById("trend-collection-rate-pill").textContent = `Collection Rate: ${rate}%`;
+
+      const W = 680, H = 210, padL = 46, padR = 20, padT = 16, padB = 30;
+      const maxVal = Math.max(1, ...dates.flatMap(d => [days[d].net, days[d].col])) * 1.1;
+
+      const getX = i => padL + i * (W - padL - padR) / (dates.length - 1);
+      const getY = v => H - padB - (v / maxVal) * (H - padT - padB);
+
+      const netPts = dates.map((d, i) => `${getX(i)},${getY(days[d].net)}`).join(" ");
+      const colPts = dates.map((d, i) => `${getX(i)},${getY(days[d].col)}`).join(" ");
+
+      // Grid lines
+      let gridLines = [0, 0.5, 1].map(lvl => {
+        const yVal = getY(maxVal * lvl);
+        const labelK = Math.round((maxVal * lvl) / 1000) + "k";
+        return `
+          <line x1="${padL}" y1="${yVal}" x2="${W - padR}" y2="${yVal}" stroke="#e2e8f0" stroke-dasharray="3,3" />
+          <text x="${padL - 8}" y="${yVal + 3}" text-anchor="end" fill="#94a3b8" font-size="10">${labelK}</text>
+        `;
+      }).join("");
+
+      // X-axis labels
+      let step = Math.max(1, Math.ceil(dates.length / 7));
+      let dateLabels = dates.map((d, i) => {
+        if (i % step === 0 || i === dates.length - 1) {
+          return `<text x="${getX(i)}" y="${H - 8}" text-anchor="middle" fill="#64748b" font-size="10">${d.slice(5)}</text>`;
+        }
+        return "";
+      }).join("");
+
+      // Interactive hover points
+      let interactiveDots = dates.map((d, i) => {
+        const xPos = getX(i);
+        const yNet = getY(days[d].net);
+        const yCol = getY(days[d].col);
+        return `
+          <g class="chart-point-group" data-date="${d}" data-net="${days[d].net}" data-col="${days[d].col}" data-cnt="${days[d].count}">
+            <line x1="${xPos}" y1="${padT}" x2="${xPos}" y2="${H - padB}" stroke="transparent" stroke-width="12" class="hover-hit-area" />
+            <circle cx="${xPos}" cy="${yNet}" r="4" fill="#2563eb" stroke="#fff" stroke-width="2" />
+            <circle cx="${xPos}" cy="${yCol}" r="4" fill="#0d9488" stroke="#fff" stroke-width="2" />
+          </g>
+        `;
+      }).join("");
+
+      wrap.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="none">
+          ${gridLines}
+          <polyline points="${netPts}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+          <polyline points="${colPts}" fill="none" stroke="#0d9488" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+          ${dateLabels}
+          ${interactiveDots}
+        </svg>
+        <div style="display:flex;justify-content:center;gap:18px;margin-top:8px;font-size:11.5px;color:var(--slate-600)">
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#2563eb;border-radius:3px;display:inline-block"></span> Net Revenue</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#0d9488;border-radius:3px;display:inline-block"></span> Collected</span>
+        </div>
+      `;
+
+      // Attach tooltip listeners
+      const tooltip = document.getElementById("chart-tooltip");
+      wrap.querySelectorAll(".chart-point-group").forEach(grp => {
+        grp.addEventListener("mouseenter", (e) => {
+          const d = grp.dataset.date;
+          const netV = Number(grp.dataset.net);
+          const colV = Number(grp.dataset.col);
+          const cnt = grp.dataset.cnt;
+          const pct = netV > 0 ? Math.round((colV / netV) * 100) : 0;
+
+          tooltip.innerHTML = `
+            <div class="tt-date">📅 ${d} · ${cnt} visits</div>
+            <div class="tt-row"><span>Net Revenue:</span> <span class="tt-val" style="color:#60a5fa">${money(netV)}</span></div>
+            <div class="tt-row"><span>Collected:</span> <span class="tt-val" style="color:#34d399">${money(colV)} (${pct}%)</span></div>
+          `;
+          tooltip.style.display = "block";
+        });
+        grp.addEventListener("mousemove", (e) => {
+          const rect = wrap.getBoundingClientRect();
+          tooltip.style.left = `${e.clientX}px`;
+          tooltip.style.top = `${e.clientY - 10}px`;
+        });
+        grp.addEventListener("mouseleave", () => {
+          tooltip.style.display = "none";
+        });
+      });
+    }
+
+    function renderServiceDonut(a) {
+      const services = [
+        { name: "Consultation", val: sum(a, "cnet"), color: "#2563eb", tab: "Consultations" },
+        { name: "Lab Tests", val: sum(a, "lnet"), color: "#0d9488", tab: "Lab investigations" },
+        { name: "Pharmacy", val: sum(a, "pnet"), color: "#d97706", tab: "Pharmacy" },
+        { name: "Procedures", val: sum(a, "prnet"), color: "#7c3aed", tab: "Procedures" }
+      ];
+
+      const total = services.reduce((s, x) => s + x.val, 0);
+      let cur = 0;
+      const stops = services.map(s => {
+        let start = cur;
+        let pct = total ? (s.val / total) * 100 : 0;
+        cur += pct;
+        return `${s.color} ${start.toFixed(1)}% ${cur.toFixed(1)}%`;
+      }).join(", ");
+
+      const box = document.getElementById("service-donut-box");
+      box.innerHTML = `
+        <div class="donut-layout">
+          <div class="donut-visual-box" title="Click to view breakdowns">
+            <div class="donut-circle" style="background: conic-gradient(${total ? stops : '#e2e8f0 0% 100%'})"></div>
+            <div class="donut-center-info">
+              <span class="val">${total ? Math.round(total / 1000) + 'k' : '₹0'}</span>
+              <span class="lbl">Total Net</span>
+            </div>
+          </div>
+          <div class="donut-legend-table">
+            ${services.map(s => {
+              let pct = total ? Math.round((s.val / total) * 100) : 0;
+              return `
+                <div class="donut-legend-item" onclick="switchTab('${s.tab}')" title="Click to view ${s.name} ledger">
+                  <div style="display:flex;align-items:center;">
+                    <span class="legend-bullet" style="background:${s.color}"></span>
+                    <span style="font-weight:600;color:var(--slate-800)">${s.name}</span>
+                  </div>
+                  <div style="text-align:right">
+                    <span style="font-weight:700;color:var(--slate-900)">${money(s.val)}</span>
+                    <span style="color:var(--slate-400);font-size:10.5px;margin-left:4px">(${pct}%)</span>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       7. DOCTOR LEADERBOARD & RECONCILIATION
+       ===================================================================== */
+    function renderDoctorLeaderboard(agg) {
+      const box = document.getElementById("doctor-ranking-bars");
+      const maxNet = Math.max(1, ...agg.map(d => d.net));
+      const colors = ["#2563eb", "#0d9488", "#d97706", "#7c3aed", "#e11d48", "#64748b"];
+
+      box.innerHTML = agg.slice(0, 6).map((d, i) => {
+        let widthPct = Math.max(3, (d.net / maxNet) * 100);
+        return `
+          <div class="bar-row" onclick="openDoctorDrawer('${d.doctor.replace(/'/g, "\\'")}')" title="Click to inspect doctor scorecard">
+            <span class="bar-label">${d.doctor.replace("Dr. ", "")} <span style="font-size:10px;color:var(--slate-400)">(${d.department.slice(0,4)})</span></span>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${widthPct}%;background:${colors[i % colors.length]}"></div>
+            </div>
+            <span class="bar-value">${money(d.net)}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderReconciliationMetrics(gross, disc, ref, rets, net, col, out) {
+      const box = document.getElementById("financial-reconciliation-metrics");
+      box.innerHTML = `
+        <div class="metric-item">
+          <span class="metric-key">Gross Service Charges (Billed)</span>
+          <span class="metric-val">${money(gross)}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-key">Less: Discounts & Concessions</span>
+          <span class="metric-val" style="color:var(--amber-600)">- ${money(disc)}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-key">Less: Service Refunds Issued</span>
+          <span class="metric-val" style="color:var(--rose-600)">- ${money(ref)}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-key">Less: Pharmacy Medication Returns</span>
+          <span class="metric-val" style="color:var(--rose-600)">- ${money(rets)}</span>
+        </div>
+        <div class="metric-item" style="background:var(--slate-50);border-radius:4px;padding:9px 10px;">
+          <span class="metric-key"><strong>= Realized Net Practice Revenue</strong></span>
+          <span class="metric-val" style="color:var(--primary);font-size:14px">${money(net)}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-key">● Actual Cash & Bank Payments Posted</span>
+          <span class="metric-val" style="color:var(--emerald-600)">${money(col)}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-key">● Outstanding Patient Receivables Balance</span>
+          <span class="metric-val" style="color:var(--amber-600)">${money(out)}</span>
+        </div>
+      `;
+    }
+
+    function renderOverviewDoctorTable(agg) {
+      const wrap = document.getElementById("overview-doctor-table-wrap");
+      const topDocs = agg.slice(0, 5);
+
+      wrap.innerHTML = `
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Facility</th>
+                <th>Patients</th>
+                <th>Net Revenue</th>
+                <th>Collected</th>
+                <th>Outstanding</th>
+                <th>Collection Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${topDocs.map(d => `
+                <tr class="clickable-row" onclick="openDoctorDrawer('${d.doctor.replace(/'/g, "\\'")}')" title="Click to view ${d.doctor}'s full profile">
+                  <td class="bold-cell">🩺 ${d.doctor}</td>
+                  <td><span class="dept-badge">${d.department}</span></td>
+                  <td>${d.facility}</td>
+                  <td>${d.patients}</td>
+                  <td class="money-cell" style="color:var(--primary)">${money(d.net)}</td>
+                  <td class="money-cell" style="color:var(--emerald-600)">${money(d.collected)}</td>
+                  <td class="money-cell" style="color:var(--amber-600)">${money(d.outstanding)}</td>
+                  <td>
+                    <span class="status-pill ${d.collectionRate >= 75 ? 'ok' : d.collectionRate >= 50 ? 'warn' : 'bad'}">
+                      ${d.collectionRate}%
+                    </span>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       8. SUB-SECTIONS (CONSULT, LAB, PHARMACY, PROCEDURES, COLLECTIONS, PATIENTS)
+       ===================================================================== */
+    function renderConsultationSection(a, done) {
+      // Bars
+      const fees = [
+        { label: "Gross Consultation Fees", val: sum(a, "cf"), color: "#2563eb" },
+        { label: "Consultation Discounts", val: sum(a, "cd"), color: "#d97706" },
+        { label: "Refunds Issued", val: sum(a, "cr"), color: "#e11d48" },
+        { label: "Net Consultation Yield", val: sum(a, "cnet"), color: "#0d9488" }
+      ];
+      const maxF = Math.max(1, ...fees.map(f => f.val));
+      document.getElementById("consult-bar-list").innerHTML = fees.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxF) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      // Metrics
+      const totalAppointments = a.length;
+      const cancelled = a.filter(x => x.cs === "Cancelled").length;
+      const noshow = a.filter(x => x.cs === "No-show").length;
+      document.getElementById("consult-metrics-list").innerHTML = `
+        <div class="metric-item"><span class="metric-key">Completed Visits</span><span class="metric-val" style="color:var(--emerald-600)">${done.length}</span></div>
+        <div class="metric-item"><span class="metric-key">Cancelled by Patient</span><span class="metric-val" style="color:var(--rose-600)">${cancelled}</span></div>
+        <div class="metric-item"><span class="metric-key">No-Show / Unattended</span><span class="metric-val" style="color:var(--amber-600)">${noshow}</span></div>
+        <div class="metric-item"><span class="metric-key">Attendance Rate</span><span class="metric-val">${totalAppointments ? Math.round((done.length / totalAppointments) * 100) : 0}%</span></div>
+        <div class="metric-item"><span class="metric-key">Average Net Fee per Visit</span><span class="metric-val">${money(done.length ? sum(a, "cnet") / done.length : 0)}</span></div>
+      `;
+
+      renderGenericTable(2, a);
+    }
+
+    function renderLabSection(a, done) {
+      const orders = a.filter(x => x.labCount > 0);
+      const bars = [
+        { label: "Gross Lab Charges", val: sum(a, "lab"), color: "#2563eb" },
+        { label: "Lab Discounts", val: sum(a, "ld"), color: "#d97706" },
+        { label: "Lab Refunds", val: sum(a, "lr"), color: "#e11d48" },
+        { label: "Net Lab Revenue", val: sum(a, "lnet"), color: "#0d9488" }
+      ];
+      const maxB = Math.max(1, ...bars.map(f => f.val));
+      document.getElementById("lab-bar-list").innerHTML = bars.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxB) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("lab-metrics-list").innerHTML = `
+        <div class="metric-item"><span class="metric-key">Total Tests Ordered</span><span class="metric-val">${sum(a, "labCount")}</span></div>
+        <div class="metric-item"><span class="metric-key">Orders Completed</span><span class="metric-val" style="color:var(--emerald-600)">${done.length}</span></div>
+        <div class="metric-item"><span class="metric-key">Pending Lab Processing</span><span class="metric-val" style="color:var(--amber-600)">${a.filter(x => x.ls === "Pending").length}</span></div>
+        <div class="metric-item"><span class="metric-key">Order Value per Investigation</span><span class="metric-val">${money(sum(a, "labCount") ? sum(a, "lnet") / sum(a, "labCount") : 0)}</span></div>
+      `;
+
+      renderGenericTable(3, orders);
+    }
+
+    function renderPharmacySection(a, done, returns) {
+      const rxOrders = a.filter(x => x.rx > 0);
+      const bars = [
+        { label: "Gross Medication Sales", val: sum(a, "pharm"), color: "#2563eb" },
+        { label: "Pharmacy Discounts", val: sum(a, "pd"), color: "#d97706" },
+        { label: "Medicine Returns", val: returns, color: "#e11d48" },
+        { label: "Net Pharmacy Realization", val: sum(a, "pnet"), color: "#0d9488" }
+      ];
+      const maxB = Math.max(1, ...bars.map(f => f.val));
+      document.getElementById("pharm-bar-list").innerHTML = bars.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxB) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("pharm-metrics-list").innerHTML = `
+        <div class="metric-item"><span class="metric-key">Total Prescriptions Written</span><span class="metric-val">${sum(a, "rx")}</span></div>
+        <div class="metric-item"><span class="metric-key">Fully Dispensed</span><span class="metric-val" style="color:var(--emerald-600)">${done.length}</span></div>
+        <div class="metric-item"><span class="metric-key">Partially Dispensed</span><span class="metric-val" style="color:var(--amber-600)">${a.filter(x => x.ps === "Partial").length}</span></div>
+        <div class="metric-item"><span class="metric-key">Returned Prescriptions</span><span class="metric-val" style="color:var(--rose-600)">${a.filter(x => x.ps === "Returned").length}</span></div>
+        <div class="metric-item"><span class="metric-key">Avg Prescription Realization</span><span class="metric-val">${money(sum(a, "rx") ? sum(a, "pnet") / sum(a, "rx") : 0)}</span></div>
+      `;
+
+      renderGenericTable(4, rxOrders);
+    }
+
+    function renderProcedureSection(a, done) {
+      const procs = a.filter(x => x.procedureCount > 0);
+      const bars = [
+        { label: "Gross Procedure Charges", val: sum(a, "procedure"), color: "#2563eb" },
+        { label: "Procedure Discounts", val: sum(a, "prd"), color: "#d97706" },
+        { label: "Procedure Refunds", val: sum(a, "prr"), color: "#e11d48" },
+        { label: "Net Procedure Yield", val: sum(a, "prnet"), color: "#7c3aed" }
+      ];
+      const maxB = Math.max(1, ...bars.map(f => f.val));
+      document.getElementById("proc-bar-list").innerHTML = bars.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxB) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("proc-metrics-list").innerHTML = `
+        <div class="metric-item"><span class="metric-key">Procedures Performed</span><span class="metric-val" style="color:var(--emerald-600)">${done.length}</span></div>
+        <div class="metric-item"><span class="metric-key">Awaiting / Scheduled</span><span class="metric-val" style="color:var(--amber-600)">${a.filter(x => x.prs === "Scheduled").length}</span></div>
+        <div class="metric-item"><span class="metric-key">Cancelled Procedures</span><span class="metric-val" style="color:var(--rose-600)">${a.filter(x => x.prs === "Cancelled").length}</span></div>
+        <div class="metric-item"><span class="metric-key">Average Procedure Yield</span><span class="metric-val">${money(done.length ? sum(a, "prnet") / done.length : 0)}</span></div>
+      `;
+
+      renderGenericTable(5, procs);
+    }
+
+    function renderCollectionsSection(a, txList) {
+      // Payment modes
+      const modes = ["Cash", "UPI", "Card", "Insurance", "Bank transfer"];
+      const colors = ["#2563eb", "#0d9488", "#7c3aed", "#d97706", "#64748b"];
+      const modeData = modes.map((m, i) => ({
+        label: m,
+        val: sum(txList.filter(x => x.mode === m), "collected"),
+        color: colors[i]
+      }));
+      const maxM = Math.max(1, ...modeData.map(f => f.val));
+      document.getElementById("paymode-bar-list").innerHTML = modeData.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxM) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      // Payment source
+      const sources = ["Consultation", "Lab Invoice", "Pharmacy Rx", "Procedure"];
+      const srcData = sources.map((s, i) => ({
+        label: s,
+        val: sum(txList.filter(x => x.source === s), "collected"),
+        color: colors[i]
+      }));
+      const maxS = Math.max(1, ...srcData.map(f => f.val));
+      document.getElementById("paysource-bar-list").innerHTML = srcData.map(f => `
+        <div class="bar-row">
+          <span class="bar-label">${f.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(f.val / maxS) * 100}%;background:${f.color}"></div></div>
+          <span class="bar-value">${money(f.val)}</span>
+        </div>
+      `).join("");
+
+      renderGenericTable(6, txList);
+    }
+
+    function renderPatientsSection(a, patAgg) {
+      const freshVisits = a.filter(x => x.fresh).length;
+      const repeatVisits = a.filter(x => !x.fresh).length;
+      const totalVisits = a.length;
+
+      document.getElementById("patient-mix-bars").innerHTML = `
+        <div class="bar-row">
+          <span class="bar-label">First-Time Patients</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${totalVisits ? (freshVisits / totalVisits) * 100 : 0}%;background:#2563eb"></div></div>
+          <span class="bar-value">${freshVisits} (${totalVisits ? Math.round(freshVisits / totalVisits * 100) : 0}%)</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Returning Patients</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${totalVisits ? (repeatVisits / totalVisits) * 100 : 0}%;background:#0d9488"></div></div>
+          <span class="bar-value">${repeatVisits} (${totalVisits ? Math.round(repeatVisits / totalVisits * 100) : 0}%)</span>
+        </div>
+      `;
+
+      const patsN = patAgg.length;
+      const totalNet = sum(a, "net");
+      const totalOut = sum(a, "outstanding");
+      document.getElementById("patient-metrics-list").innerHTML = `
+        <div class="metric-item"><span class="metric-key">Total Unique Patients</span><span class="metric-val">${patsN}</span></div>
+        <div class="metric-item"><span class="metric-key">Average Visits per Patient</span><span class="metric-val">${patsN ? (totalVisits / patsN).toFixed(1) : 0}</span></div>
+        <div class="metric-item"><span class="metric-key">Average Revenue per Patient</span><span class="metric-val" style="color:var(--primary)">${money(patsN ? totalNet / patsN : 0)}</span></div>
+        <div class="metric-item"><span class="metric-key">Average Balance Due per Patient</span><span class="metric-val" style="color:var(--amber-600)">${money(patsN ? totalOut / patsN : 0)}</span></div>
+      `;
+
+      renderGenericTable(7, patAgg);
+    }
+
+    /* =====================================================================
+       9. REUSABLE INTERACTIVE DATA TABLES (SEARCH, SORT, PAGINATE, CLICK)
+       ===================================================================== */
+    const tableConfigs = {
+      1: {
+        cols: [
+          { key: "doctor", title: "Doctor", type: "string" },
+          { key: "department", title: "Department", type: "string" },
+          { key: "facility", title: "Facility", type: "string" },
+          { key: "patients", title: "Patients", type: "number" },
+          { key: "consults", title: "Consults", type: "number" },
+          { key: "consultNet", title: "Consult Net", type: "money" },
+          { key: "labNet", title: "Lab Net", type: "money" },
+          { key: "pharmNet", title: "Pharmacy Net", type: "money" },
+          { key: "procedureNet", title: "Procedure Net", type: "money" },
+          { key: "net", title: "Net Revenue", type: "money" },
+          { key: "collected", title: "Collected", type: "money" },
+          { key: "outstanding", title: "Outstanding", type: "money" },
+          { key: "collectionRate", title: "Rate", type: "pill" }
+        ],
+        onRowClick: (r) => `openDoctorDrawer('${r.doctor.replace(/'/g, "\\'")}')`
+      },
+      2: {
+        cols: [
+          { key: "date", title: "Date", type: "string" },
+          { key: "doctor", title: "Doctor", type: "string" },
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "facility", title: "Facility", type: "string" },
+          { key: "cs", title: "Status", type: "status" },
+          { key: "cf", title: "Gross Fee", type: "money" },
+          { key: "cd", title: "Discount", type: "money" },
+          { key: "cr", title: "Refund", type: "money" },
+          { key: "cnet", title: "Net Fee", type: "money" }
+        ],
+        onRowClick: (r) => `openEncounterModal('${r.id}')`
+      },
+      3: {
+        cols: [
+          { key: "date", title: "Date", type: "string" },
+          { key: "doctor", title: "Ordering Doctor", type: "string" },
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "labCount", title: "Test Count", type: "number" },
+          { key: "ls", title: "Status", type: "status" },
+          { key: "lab", title: "Gross Bill", type: "money" },
+          { key: "ld", title: "Discount", type: "money" },
+          { key: "lr", title: "Refund", type: "money" },
+          { key: "lnet", title: "Net Lab", type: "money" }
+        ],
+        onRowClick: (r) => `openEncounterModal('${r.id}')`
+      },
+      4: {
+        cols: [
+          { key: "date", title: "Date", type: "string" },
+          { key: "doctor", title: "Prescribing Doctor", type: "string" },
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "rx", title: "Rx Count", type: "number" },
+          { key: "ps", title: "Dispensing Status", type: "status" },
+          { key: "pharm", title: "Gross Sale", type: "money" },
+          { key: "pd", title: "Discount", type: "money" },
+          { key: "ret", title: "Returns", type: "money" },
+          { key: "pnet", title: "Net Pharmacy", type: "money" }
+        ],
+        onRowClick: (r) => `openEncounterModal('${r.id}')`
+      },
+      5: {
+        cols: [
+          { key: "date", title: "Date", type: "string" },
+          { key: "doctor", title: "Performing Surgeon", type: "string" },
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "procedureCount", title: "Procedures", type: "number" },
+          { key: "prs", title: "Status", type: "status" },
+          { key: "procedure", title: "Gross Charge", type: "money" },
+          { key: "prd", title: "Discount", type: "money" },
+          { key: "prr", title: "Refund", type: "money" },
+          { key: "prnet", title: "Net Charge", type: "money" }
+        ],
+        onRowClick: (r) => `openEncounterModal('${r.id}')`
+      },
+      6: {
+        cols: [
+          { key: "date", title: "Date", type: "string" },
+          { key: "id", title: "Invoice Ref", type: "string" },
+          { key: "source", title: "Service Source", type: "string" },
+          { key: "doctor", title: "Doctor", type: "string" },
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "mode", title: "Payment Mode", type: "string" },
+          { key: "status", title: "Payment Status", type: "status" },
+          { key: "invoiceNet", title: "Invoice Net", type: "money" },
+          { key: "collected", title: "Collected", type: "money" },
+          { key: "outstanding", title: "Balance Due", type: "money" }
+        ],
+        onRowClick: (r) => `openEncounterModal('${r.encounter}')`
+      },
+      7: {
+        cols: [
+          { key: "patient", title: "Patient ID", type: "string" },
+          { key: "patientName", title: "Patient Name", type: "string" },
+          { key: "visits", title: "Visits Count", type: "number" },
+          { key: "doctor", title: "Latest Doctor", type: "string" },
+          { key: "lastVisit", title: "Last Visit", type: "string" },
+          { key: "net", title: "Net Charges", type: "money" },
+          { key: "collected", title: "Collected", type: "money" },
+          { key: "outstanding", title: "Balance Owed", type: "money" }
+        ],
+        onRowClick: (r) => `openDoctorDrawer('${r.doctor.replace(/'/g, "\\'")}')`
+      }
+    };
+
+    function renderDoctorWiseTable(agg) {
+      renderGenericTable(1, agg);
+    }
+
+    function renderGenericTable(tableId, rawData) {
+      const state = tableStates[tableId];
+      const cfg = tableConfigs[tableId];
+      if (!cfg) return;
+
+      // Filter by search
+      let data = [...rawData];
+      if (state.search) {
+        const q = state.search.toLowerCase();
+        data = data.filter(row => {
+          return Object.values(row).some(v => String(v).toLowerCase().includes(q));
+        });
+      }
+
+      // Filter by subfilter (status / tab chips)
+      if (state.subFilter && state.subFilter !== "all") {
+        const sf = state.subFilter;
+        if (tableId === 2) data = data.filter(r => r.cs === sf);
+        if (tableId === 3) data = data.filter(r => r.ls === sf);
+        if (tableId === 4) data = data.filter(r => r.ps === sf);
+        if (tableId === 5) data = data.filter(r => r.prs === sf);
+        if (tableId === 6) data = data.filter(r => r.status === sf);
+      }
+
+      // Sort
+      if (state.sortCol) {
+        data.sort((a, b) => {
+          let va = a[state.sortCol] ?? "";
+          let vb = b[state.sortCol] ?? "";
+          if (typeof va === "number" && typeof vb === "number") {
+            return state.sortAsc ? va - vb : vb - va;
+          }
+          return state.sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+        });
+      }
+
+      // Pagination
+      const totalRows = data.length;
+      const totalPages = Math.max(1, Math.ceil(totalRows / state.pageSize));
+      if (state.page > totalPages) state.page = totalPages;
+      const startIdx = (state.page - 1) * state.pageSize;
+      const paginatedData = data.slice(startIdx, startIdx + state.pageSize);
+
+      // Render Table
+      const wrap = document.getElementById(`table-wrap-${tableId}`);
+      if (!wrap) return;
+
+      let html = `<table class="data-table"><thead><tr>`;
+      cfg.cols.forEach(c => {
+        const isSorted = state.sortCol === c.key;
+        const sortClass = isSorted ? (state.sortAsc ? "sorted-asc" : "sorted-desc") : "";
+        const icon = isSorted ? (state.sortAsc ? "▲" : "▼") : "⇅";
+        html += `<th class="${sortClass}" onclick="handleTableSort(${tableId}, '${c.key}')">${c.title} <span class="sort-icon">${icon}</span></th>`;
+      });
+      html += `</tr></thead><tbody>`;
+
+      if (paginatedData.length === 0) {
+        html += `<tr><td colspan="${cfg.cols.length}" style="text-align:center;padding:26px;color:var(--slate-400)">No records found matching current query or filters.</td></tr>`;
+      } else {
+        paginatedData.forEach(row => {
+          const clickHandler = cfg.onRowClick ? `class="clickable-row" onclick="${cfg.onRowClick(row)}"` : "";
+          html += `<tr ${clickHandler}>`;
+          cfg.cols.forEach(c => {
+            const val = row[c.key];
+            if (c.type === "money") {
+              html += `<td class="money-cell">${money(val)}</td>`;
+            } else if (c.type === "status") {
+              const pillClass = ["Completed", "Paid", "Dispensed"].includes(val) ? "ok" : ["Cancelled", "Unpaid", "No-show"].includes(val) ? "bad" : "warn";
+              html += `<td><span class="status-pill ${pillClass}">${val ?? "—"}</span></td>`;
+            } else if (c.type === "pill") {
+              const pillClass = val >= 75 ? "ok" : val >= 50 ? "warn" : "bad";
+              html += `<td><span class="status-pill ${pillClass}">${val}%</span></td>`;
+            } else if (c.key === "doctor") {
+              html += `<td class="bold-cell">🩺 ${val}</td>`;
+            } else if (c.key === "patient" || c.key === "id") {
+              html += `<td><code>${val}</code></td>`;
+            } else {
+              html += `<td>${val ?? "—"}</td>`;
+            }
+          });
+          html += `</tr>`;
+        });
+      }
+      html += `</tbody></table>`;
+      wrap.innerHTML = html;
+
+      // Info Counter
+      const infoEl = document.getElementById(`table-info-${tableId}`);
+      if (infoEl) {
+        infoEl.textContent = `Showing ${Math.min(totalRows, startIdx + 1)}–${Math.min(totalRows, startIdx + state.pageSize)} of ${totalRows} entries`;
+      }
+
+      // Pagination Controls
+      const footerEl = document.getElementById(`table-footer-${tableId}`);
+      if (footerEl) {
+        footerEl.innerHTML = `
+          <div>Page <strong>${state.page}</strong> of <strong>${totalPages}</strong></div>
+          <div class="pagination-controls">
+            <button class="page-btn" ${state.page <= 1 ? "disabled" : ""} onclick="changeTablePage(${tableId}, ${state.page - 1})">◀ Prev</button>
+            <span style="font-size:11px;padding:0 4px;">Page ${state.page}</span>
+            <button class="page-btn" ${state.page >= totalPages ? "disabled" : ""} onclick="changeTablePage(${tableId}, ${state.page + 1})">Next ▶</button>
+          </div>
+        `;
+      }
+    }
+
+    function handleTableSearch(tableId, query) {
+      tableStates[tableId].search = query;
+      tableStates[tableId].page = 1;
+      refreshTable(tableId);
+    }
+
+    function handleTableSort(tableId, colKey) {
+      const state = tableStates[tableId];
+      if (state.sortCol === colKey) {
+        state.sortAsc = !state.sortAsc;
+      } else {
+        state.sortCol = colKey;
+        state.sortAsc = false;
+      }
+      refreshTable(tableId);
+    }
+
+    function changeTablePage(tableId, newPage) {
+      tableStates[tableId].page = newPage;
+      refreshTable(tableId);
+    }
+
+    function setSubFilter(tableId, filterVal) {
+      tableStates[tableId].subFilter = filterVal;
+      tableStates[tableId].page = 1;
+
+      // Update active chip UI
+      const pageEl = document.getElementById(`tab-page-${tableId}`);
+      if (pageEl) {
+        pageEl.querySelectorAll(".table-chip").forEach(chip => {
+          chip.classList.toggle("active", chip.textContent.trim().toLowerCase() === filterVal.toLowerCase() || (filterVal === 'all' && chip.textContent.includes('All')));
+        });
+      }
+      refreshTable(tableId);
+    }
+
+    function refreshTable(tableId) {
+      if (tableId === 1) renderGenericTable(1, cachedDoctorAgg);
+      else if (tableId === 2) renderGenericTable(2, currentFilteredRows);
+      else if (tableId === 3) renderGenericTable(3, currentFilteredRows.filter(x => x.labCount > 0));
+      else if (tableId === 4) renderGenericTable(4, currentFilteredRows.filter(x => x.rx > 0));
+      else if (tableId === 5) renderGenericTable(5, currentFilteredRows.filter(x => x.procedureCount > 0));
+      else if (tableId === 6) renderGenericTable(6, cachedTransactions);
+      else if (tableId === 7) renderGenericTable(7, cachedPatientAgg);
+    }
+
+    /* =====================================================================
+       10. DOCTOR PROFILE DRAWER & ENCOUNTER MODAL
+       ===================================================================== */
+    function openDoctorDrawer(docName) {
+      const doc = cachedDoctorAgg.find(d => d.doctor === docName);
+      if (!doc) return;
+
+      document.getElementById("drawer-doctor-name").textContent = doc.doctor;
+      document.getElementById("drawer-doctor-sub").textContent = `${doc.department} · ${doc.facility}`;
+
+      const recs = doc.records;
+      const drawerBody = document.getElementById("drawer-body-content");
+      drawerBody.innerHTML = `
+        <div class="drawer-section">
+          <h4>Performance Overview</h4>
+          <div class="grid-2" style="margin-bottom:12px;">
+            <div class="kpi-card" style="padding:12px;">
+              <div class="kpi-label">Net Practice Revenue</div>
+              <div class="kpi-val" style="color:var(--primary);font-size:20px;">${money(doc.net)}</div>
+              <div class="kpi-sub">${doc.collectionRate}% collected</div>
+            </div>
+            <div class="kpi-card" style="padding:12px;">
+              <div class="kpi-label">Patients Attended</div>
+              <div class="kpi-val" style="color:var(--slate-800);font-size:20px;">${doc.patients}</div>
+              <div class="kpi-sub">${money(doc.avgPerPatient)} avg / patient</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <h4>Service Line Breakdown</h4>
+          <div class="metric-list" style="background:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0;">
+            <div class="metric-item"><span class="metric-key">🩺 Consultation Fees</span><span class="metric-val">${money(doc.consultNet)}</span></div>
+            <div class="metric-item"><span class="metric-key">🔬 Lab Investigations</span><span class="metric-val">${money(doc.labNet)}</span></div>
+            <div class="metric-item"><span class="metric-key">💊 Pharmacy Prescriptions</span><span class="metric-val">${money(doc.pharmNet)}</span></div>
+            <div class="metric-item"><span class="metric-key">💉 Procedures Performed</span><span class="metric-val">${money(doc.procedureNet)}</span></div>
+            <div class="metric-item"><span class="metric-key" style="color:var(--rose-600)">↩ Deductions & Refunds</span><span class="metric-val" style="color:var(--rose-600)">- ${money(doc.refunds + doc.returns)}</span></div>
+            <div class="metric-item" style="border-top:1px dashed #cbd5e1;padding-top:10px;"><span class="metric-key"><strong>Cash Collected</strong></span><span class="metric-val" style="color:var(--emerald-600)"><strong>${money(doc.collected)}</strong></span></div>
+            <div class="metric-item"><span class="metric-key" style="color:var(--amber-600)">Pending Receivables</span><span class="metric-val" style="color:var(--amber-600)">${money(doc.outstanding)}</span></div>
+          </div>
+        </div>
+
+        <div class="drawer-section">
+          <h4>Recent Patient Encounters (${recs.length})</h4>
+          <div class="table-responsive" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:6px;">
+            <table class="data-table">
+              <thead>
+                <tr><th>Date</th><th>Patient</th><th>Status</th><th>Net</th></tr>
+              </thead>
+              <tbody>
+                ${recs.slice(0, 8).map(r => `
+                  <tr class="clickable-row" onclick="openEncounterModal('${r.id}')">
+                    <td>${r.date.slice(5)}</td>
+                    <td><b>${r.patientName}</b></td>
+                    <td><span class="status-pill ${r.payment === 'Paid' ? 'ok' : r.payment === 'Partial' ? 'warn' : 'bad'}">${r.payment}</span></td>
+                    <td class="money-cell">${money(r.net)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="filterByDoctor('${doc.doctor}')">Filter Dashboard to this Doctor</button>
+          <button class="btn btn-secondary btn-sm" onclick="closeDoctorDrawer()">Close</button>
+        </div>
+      `;
+
+      document.getElementById("drawer-overlay").classList.add("active");
+      document.getElementById("doctor-drawer").classList.add("active");
+    }
+
+    function closeDoctorDrawer() {
+      document.getElementById("drawer-overlay").classList.remove("active");
+      document.getElementById("doctor-drawer").classList.remove("active");
+    }
+
+    function filterByDoctor(docName) {
+      document.getElementById("doctor").value = docName;
+      closeDoctorDrawer();
+      applyFilters();
+    }
+
+    function openEncounterModal(encId) {
+      const enc = masterRows.find(x => x.id === encId);
+      if (!enc) return;
+
+      document.getElementById("modal-title").textContent = `Encounter Receipt: ${enc.id}`;
+      document.getElementById("modal-body-content").innerHTML = `
+        <div class="receipt-box">
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:10px;">
+            <div>
+              <div style="font-weight:700;font-size:14px;color:var(--slate-900)">${enc.patientName} (${enc.patient})</div>
+              <div style="font-size:11px;color:var(--slate-500)">Date: ${enc.date} · Facility: ${enc.facility}</div>
+            </div>
+            <div style="text-align:right">
+              <span class="status-pill ${enc.payment === 'Paid' ? 'ok' : enc.payment === 'Partial' ? 'warn' : 'bad'}">${enc.payment}</span>
+              <div style="font-size:11px;color:var(--slate-500);margin-top:4px;">Via ${enc.mode}</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:10px;font-size:12px;color:var(--slate-700)">
+            <strong>Treating Physician:</strong> 🩺 ${enc.doctor} (${enc.dept})
+          </div>
+
+          <div class="metric-list" style="margin-top:12px;">
+            <div class="metric-item"><span>Consultation Fee (${enc.cs})</span><span>${money(enc.cf)}</span></div>
+            ${enc.cd ? `<div class="metric-item" style="color:var(--amber-600)"><span>Concession / Discount</span><span>- ${money(enc.cd)}</span></div>` : ""}
+            ${enc.cr ? `<div class="metric-item" style="color:var(--rose-600)"><span>Consultation Refund</span><span>- ${money(enc.cr)}</span></div>` : ""}
+            
+            ${enc.lab ? `<div class="metric-item"><span>Lab Tests (${enc.labCount} items - ${enc.ls})</span><span>${money(enc.lab)}</span></div>` : ""}
+            ${enc.pharm ? `<div class="metric-item"><span>Pharmacy Rx (${enc.ps})</span><span>${money(enc.pharm)}</span></div>` : ""}
+            ${enc.procedure ? `<div class="metric-item"><span>Procedure (${enc.prs})</span><span>${money(enc.procedure)}</span></div>` : ""}
+            
+            <div class="metric-item" style="background:#fff;border-radius:4px;padding:9px;font-weight:700;border:1px solid #e2e8f0;">
+              <span>Total Net Billed</span>
+              <span style="color:var(--primary);font-size:14px;">${money(enc.net)}</span>
+            </div>
+            <div class="metric-item"><span>Amount Collected</span><span style="color:var(--emerald-600);font-weight:700;">${money(enc.collected)}</span></div>
+            <div class="metric-item"><span>Remaining Balance</span><span style="color:var(--amber-600);font-weight:700;">${money(enc.outstanding)}</span></div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("encounter-modal").classList.add("active");
+    }
+
+    function closeEncounterModal(e) {
+      if (!e || e.target.id === "encounter-modal" || e.target.classList.contains("close-drawer-btn")) {
+        document.getElementById("encounter-modal").classList.remove("active");
+      }
+    }
+
+    /* =====================================================================
+       11. CSV EXPORT UTILITY
+       ===================================================================== */
+    function exportCurrentCSV() {
+      if (!hasApplied || !currentFilteredRows.length) {
+        alert("Please apply filters before exporting data.");
+        return;
+      }
+
+      let dataToExport = [];
+      let filename = `doctor-report-${currentTab.toLowerCase().replace(/[^a-z0-9]/g, "-")}.csv`;
+
+      if (currentTab === "Overview" || currentTab === "Doctor-wise") {
+        dataToExport = cachedDoctorAgg.map(d => ({
+          Doctor: d.doctor,
+          Department: d.department,
+          Facility: d.facility,
+          Patients: d.patients,
+          Consults: d.consults,
+          ConsultNet: d.consultNet,
+          LabNet: d.labNet,
+          PharmacyNet: d.pharmNet,
+          ProcedureNet: d.procedureNet,
+          TotalNet: d.net,
+          Collected: d.collected,
+          Outstanding: d.outstanding,
+          CollectionRatePct: d.collectionRate
+        }));
+      } else if (currentTab === "Consultations") {
+        dataToExport = currentFilteredRows.map(r => ({
+          Date: r.date,
+          Doctor: r.doctor,
+          PatientID: r.patient,
+          PatientName: r.patientName,
+          Facility: r.facility,
+          Status: r.cs,
+          GrossFee: r.cf,
+          Discount: r.cd,
+          Refund: r.cr,
+          NetFee: r.cnet
+        }));
+      } else if (currentTab === "Collections & returns") {
+        dataToExport = cachedTransactions;
+      } else if (currentTab === "Patients") {
+        dataToExport = cachedPatientAgg;
+      } else {
+        dataToExport = currentFilteredRows;
+      }
+
+      if (!dataToExport.length) return alert("No data available to export.");
+
+      const keys = Object.keys(dataToExport[0]);
+      const csvLines = [
+        keys.join(","),
+        ...dataToExport.map(row => keys.map(k => {
+          let val = row[k] ?? "";
+          return `"${String(val).replace(/"/g, '""')}"`;
+        }).join(","))
+      ];
+
+      const blob = new Blob([csvLines.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

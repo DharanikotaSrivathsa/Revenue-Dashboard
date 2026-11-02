@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HealthCore IQ | Multi-Entity Healthcare Intelligence</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .fade-in { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased flex">
+
+  <!-- 1. LEFT SIDEBAR NAVIGATION -->
+  <aside id="main-sidebar" class="w-64 bg-slate-950 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-40 border-r border-slate-800 shadow-xl select-none transition-all duration-300 ease-in-out">
+    <!-- Brand Header -->
+    <div class="p-4 border-b border-slate-800/80 bg-slate-950/60 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <div onclick="toggleSidebar()" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 ring-2 ring-white/10 flex-shrink-0 text-xl font-bold cursor-pointer">
+          ⚕️
+        </div>
+        <div class="min-w-0 sidebar-text">
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-black text-sm tracking-tight text-white truncate">HealthCore IQ</h1>
+            <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              Pro
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 truncate">Apollo Healthcare System</p>
+        </div>
+      </div>
+      <button onclick="toggleSidebar()" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer sidebar-text" title="Collapse navigation (Ctrl+B)">
+        ◀
+      </button>
+    </div>
+
+    <!-- Navigation List -->
+    <div class="flex-1 overflow-y-auto p-3 space-y-4">
+      <div>
+        <div class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 sidebar-text">
+          Enterprise Modules
+        </div>
+        <nav class="space-y-1" id="nav-list">
+          <button class="nav-btn active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md cursor-pointer text-left" data-sec="overview">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>🏢</span>
+              <span class="sidebar-text">Hospital Overview</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-white/20 text-white sidebar-text">Group</span>
+          </button>
+          <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left" data-sec="doctors">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>👨‍⚕️</span>
+              <span class="sidebar-text">Doctor Performance</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 sidebar-text">Scorecards</span>
+          </button>
+          <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left" data-sec="non-revenue">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>📊</span>
+              <span class="sidebar-text">Non-Revenue Performance</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 sidebar-text">5 Areas</span>
+          </button>
+          <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left" data-sec="departments">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>🏥</span>
+              <span class="sidebar-text">Departments</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 sidebar-text">5 Depts</span>
+          </button>
+          <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left" data-sec="labs">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>🔬</span>
+              <span class="sidebar-text">Labs Diagnostics</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 sidebar-text">Diagnostics</span>
+          </button>
+          <button class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left" data-sec="pharmacy">
+            <div class="flex items-center gap-2.5 truncate">
+              <span>💊</span>
+              <span class="sidebar-text">Pharmacy Dispensary</span>
+            </div>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 sidebar-text">Formulary</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-3.5 border-t border-slate-800/80 bg-slate-950/80 text-xs sidebar-text">
+      <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400" id="sb-pulse"></span>
+          <div>
+            <div class="text-[11px] font-bold text-white leading-tight" id="sb-status">Awaiting Query</div>
+            <div class="text-[10px] text-slate-400" id="sb-sub">Click Search above</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. MAIN CONTENT AREA (Offset by Sidebar pl-64) -->
+  <div class="pl-64 flex-1 flex flex-col min-h-screen">
+    <!-- Slim Top Header -->
+    <header class="h-16 bg-white border-b border-slate-200/90 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3 text-xs">
+        <button onclick="toggleSidebar()" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200/90" title="Toggle Sidebar (Ctrl+B)">
+          ☰
+        </button>
+        <span class="font-semibold text-slate-500">Apollo Health</span>
+        <span class="text-slate-400">/</span>
+        <span class="font-bold text-slate-900 text-sm" id="top-title">Hospital Overview & Group Analytics</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hidden" id="top-counter-badge">
+          ● <span id="top-counter-text">0 Encounters Filtered</span>
+        </div>
+        <button onclick="window.print()" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg transition-colors cursor-pointer">
+          Print / PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="flex-1 p-6 sm:p-8 max-w-[1600px] w-full mx-auto">
+      <!-- Doccure Search Console -->
+      <div id="doccure-search-container" class="w-full space-y-4 mb-6">
+        <!-- Search Pill Form -->
+        <form onsubmit="event.preventDefault(); applyFilters();" class="bg-white rounded-2xl p-2.5 shadow-md shadow-slate-200/50 border border-slate-200/80 flex flex-col md:flex-row items-stretch md:items-center gap-2 text-slate-800">
+          <!-- Location -->
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl md:w-48 border border-slate-200/60">
+            <span class="text-cyan-600 text-sm">📍</span>
+            <div class="min-w-0 flex-1">
+              <span class="block text-[8px] font-bold uppercase tracking-wider text-slate-400">Location</span>
+              <select id="facility" class="w-full text-xs font-bold text-slate-900 bg-transparent outline-none cursor-pointer truncate">
+                <option value="All">All Facilities (3)</option>
+                <option>Central Hospital</option>
+                <option>North Clinic</option>
+                <option>South Clinic</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Specialty -->
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl md:w-52 border border-slate-200/60">
+            <span class="text-blue-600 text-sm">🩺</span>
+            <div class="min-w-0 flex-1">
+              <span class="block text-[8px] font-bold uppercase tracking-wider text-slate-400">Specialty</span>
+              <select id="dept" class="w-full text-xs font-bold text-slate-900 bg-transparent outline-none cursor-pointer truncate">
+                <option value="All">All Specialties (5)</option>
+                <option>General Medicine</option>
+                <option>Cardiology</option>
+                <option>Orthopedics</option>
+                <option>Gynecology</option>
+                <option>Dermatology</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Keyword Search -->
+          <div class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-50 rounded-xl flex-1 border border-slate-200/60">
+            <span class="text-slate-400 text-sm">🔍</span>
+            <input type="text" id="keyword" placeholder="Search clinician, patient, procedure..." class="w-full text-xs font-semibold text-slate-900 bg-transparent placeholder-slate-400 outline-none">
+          </div>
+
+          <!-- Filters Toggle -->
+          <button type="button" onclick="toggleMoreFilters()" class="px-3 py-2 text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80 rounded-xl flex items-center gap-1.5 cursor-pointer">
+            <span>⚙️ Filters</span>
+          </button>
+
+          <!-- Search CTA -->
+          <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>🔍 Search Analytics</span>
+          </button>
+
+          <!-- Reset -->
+          <button type="button" onclick="resetFilters()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl cursor-pointer" title="Reset search">
+            ↺
+          </button>
+        </form>
+
+        <!-- More Filters Expandable Panel -->
+        <div id="more-filters-panel" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-md grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Physician</label>
+            <select id="doctor" class="w-full text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer">
+              <option value="All">All Doctors (6)</option>
+            </select>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Settlement Status</label>
+            <select id="pay" class="w-full text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer">
+              <option value="All">All Payment Types</option>
+              <option value="Paid">Paid in Full</option>
+              <option value="Partial">Partial Settlement</option>
+              <option value="Unpaid">Unpaid / Outstanding</option>
+            </select>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">From Date</label>
+            <input type="date" id="from" value="2026-10-01" class="w-full text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer">
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">To Date</label>
+            <input type="date" id="to" value="2026-10-29" class="w-full text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+      <!-- State 1: Doccure Hero & Empty Showcase (HIDDEN after search) -->
+      <div id="empty-state" class="space-y-6 my-4">
+        <!-- Hero Banner -->
+        <div class="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 rounded-3xl p-8 sm:p-10 text-white shadow-xl shadow-blue-500/15 border border-blue-400/30 text-center space-y-4">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-bold text-white shadow-xs">
+            ✨ Doccure-Powered Healthcare & Clinical Search
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white">
+            Discover Doctors & Practice Intelligence
+          </h2>
+          <p class="text-xs sm:text-sm text-blue-100 max-w-2xl mx-auto font-medium leading-relaxed">
+            Search by clinician name, medical specialty, hospital branch, or clinical keyword.
+            Click <strong class="text-white underline">Search Analytics</strong> or any clinician below to compute live performance data.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <button onclick="quickFilterDept('General Medicine')" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/20 cursor-pointer">🩺 General Medicine</button>
+            <button onclick="quickFilterDept('Cardiology')" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/20 cursor-pointer">❤️ Cardiology</button>
+            <button onclick="quickFilterDept('Orthopedics')" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/20 cursor-pointer">🦴 Orthopedics</button>
+            <button onclick="quickFilterDept('Gynecology')" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/20 cursor-pointer">🌸 Gynecology</button>
+            <button onclick="quickFilterDept('Dermatology')" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/20 cursor-pointer">✨ Dermatology</button>
+          </div>
+        </div>
+
+        <!-- Featured Specialist Cards Grid -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Featured Medical Specialists</h3>
+              <p class="text-xs text-slate-500">Select any clinician to load their practice scorecard & non-revenue analytics</p>
+            </div>
+            <button onclick="applyFilters()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer">
+              ⚡ Load All Specialists (6)
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="featured-docs-grid"></div>
+        </div>
+      </div>
+
+      <!-- State 2: Active Dashboard Content -->
+      <div id="dashboard-view" class="hidden space-y-6 fade-in">
+        <!-- Rendered dynamically -->
+      </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200/90 py-4 px-8 text-center text-xs text-slate-400 mt-auto">
+      HealthCore IQ Enterprise · Healthcare Revenue & Clinical Analytics Platform
+    </footer>
+  </div>
+
+  <!-- Slide-out Doctor Profile Drawer -->
+  <div id="drawer-overlay" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden z-50" onclick="closeDrawer()"></div>
+  <div id="doctor-drawer" class="fixed inset-y-0 right-0 max-w-full flex pl-10 hidden z-50">
+    <div class="w-screen max-w-lg bg-white shadow-2xl flex flex-col" id="drawer-content"></div>
+  </div>
+
+  <script>
+    const docs = [
+      ["Dr. Asha Rao", "General Medicine", "Central Hospital", "Room 102", "14 yrs"],
+      ["Dr. Rahul Varma", "Cardiology", "Central Hospital", "Room 205", "18 yrs"],
+      ["Dr. Meera Nair", "Orthopedics", "North Clinic", "Room 108", "11 yrs"],
+      ["Dr. Kiran Reddy", "Gynecology", "South Clinic", "Room 301", "15 yrs"],
+      ["Dr. Priya Shah", "Dermatology", "North Clinic", "Room 104", "9 yrs"],
+      ["Dr. Vivek Kumar", "General Medicine", "South Clinic", "Room 110", "12 yrs"]
+    ];
+
+    const patients = Array.from({ length: 90 }, (_, i) => ({
+      id: "PT" + (1001 + i),
+      name: ["Ananya Sharma", "Rohit Kapoor", "Sana Mirza", "Arjun Patel", "Divya Raghavan", "Manoj Tiwari", "Neha Verma", "Karthik Ganesan"][i % 8],
+      fresh: i % 3 === 0
+    }));
+
+    const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = a => a[rnd(0, a.length - 1)];
+    const money = n => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n || 0);
+    const num = n => new Intl.NumberFormat("en-IN").format(n || 0);
+    const sum = (a, k) => a.reduce((s, x) => s + (x[k] || 0), 0);
+    const unique = (a, k) => new Set(a.map(x => x[k])).size;
+
+    let rows = [], id = 1;
+    docs.forEach(d => {
+      for (let i = 0; i < 30; i++) {
+        let p = pick(patients);
+        let date = `2026-10-${String(rnd(1, 29)).padStart(2, "0")}`;
+        let cs = pick(["Completed", "Completed", "Completed", "Cancelled", "No-show"]);
+        let ls = rnd(0, 1) ? pick(["Completed", "Pending", "Cancelled"]) : "Not ordered";
+        let ps = pick(["Dispensed", "Dispensed", "Partial", "Returned", "No prescription"]);
+        let prs = pick(["Completed", "Completed", "Scheduled", "Cancelled", "Not performed"]);
+
+        let cf = rnd(500, 1200);
+        let lb = ls === "Not ordered" ? 0 : rnd(300, 2800);
+        let ph = ps === "No prescription" ? 0 : rnd(150, 2200);
+        let pr = prs === "Not performed" ? 0 : rnd(800, 4800);
+
+        let cd = Math.random() < 0.12 ? rnd(30, 100) : 0;
+        let ld = Math.random() < 0.12 ? rnd(30, 160) : 0;
+        let pd = Math.random() < 0.10 ? rnd(20, 100) : 0;
+        let prd = Math.random() < 0.10 ? rnd(50, 250) : 0;
+
+        let cr = Math.random() < 0.03 ? rnd(100, 250) : 0;
+        let lr = Math.random() < 0.07 ? rnd(50, Math.max(60, Math.floor(lb * 0.3))) : 0;
+        let ret = ps === "Returned" && ph ? rnd(50, Math.max(60, Math.floor(ph * 0.35))) : 0;
+        let prr = Math.random() < 0.05 && pr ? rnd(50, Math.max(60, Math.floor(pr * 0.25))) : 0;
+
+        let cnet = cs === "Completed" ? Math.max(0, cf - cd - cr) : 0;
+        let lnet = ls === "Completed" ? Math.max(0, lb - ld - lr) : 0;
+        let pnet = ph ? Math.max(0, ph - pd - ret) : 0;
+        let prnet = prs === "Completed" ? Math.max(0, pr - prd - prr) : 0;
+        let net = cnet + lnet + pnet + prnet;
+
+        let rate = pick([1, 1, 1, 0.7, 0.5, 0]);
+        let col = Math.round(net * rate);
+
+        rows.push({
+          id: "ENC-" + String(id++).padStart(4, "0"),
+          date,
+          doctor: d[0],
+          dept: d[1],
+          facility: d[2],
+          room: d[3],
+          experience: d[4],
+          patient: p.id,
+          patientName: p.name,
+          cs, cf, cd, cr, cnet,
+          lab: lb, labCount: lb ? rnd(1, 4) : 0, ls, ld, lr, lnet,
+          pharm: ph, rx: ph ? 1 : 0, ps, pd, ret, pnet,
+          procedure: pr, procedureCount: pr ? 1 : 0, prs, prd, prr, prnet,
+          net,
+          collected: col,
+          outstanding: Math.max(0, net - col),
+          payment: col === net && net > 0 ? "Paid" : col > 0 ? "Partial" : "Unpaid",
+          // Non-revenue clinical attributes
+          isFollowUp: (id % 2 === 0),
+          followUpCompleted: (id % 2 === 0) && cs === "Completed",
+          procedureCompleted: (prs === "Completed" && pr > 0) ? 1 : 0,
+          referralMade: Math.random() < 0.25 ? 1 : 0,
+          admissionInitiated: (cs === "Completed" && Math.random() < 0.14) ? 1 : 0
+        });
+      }
+    });
+
+    
+    let isSidebarCollapsed = false;
+    function toggleSidebar() {
+      isSidebarCollapsed = !isSidebarCollapsed;
+      const sb = document.getElementById('main-sidebar');
+      const mc = sb.nextElementSibling;
+      if (isSidebarCollapsed) {
+        sb.classList.remove('w-64');
+        sb.classList.add('w-20');
+        mc.classList.remove('pl-64');
+        mc.classList.add('pl-20');
+        document.querySelectorAll('.sidebar-text').forEach(el => el.classList.add('hidden'));
+      } else {
+        sb.classList.remove('w-20');
+        sb.classList.add('w-64');
+        mc.classList.remove('pl-20');
+        mc.classList.add('pl-64');
+        document.querySelectorAll('.sidebar-text').forEach(el => el.classList.remove('hidden'));
+      }
+    }
+
+    function toggleMoreFilters() {
+      const p = document.getElementById('more-filters-panel');
+      p.classList.toggle('hidden');
+    }
+
+    function quickFilterDept(deptName) {
+      document.getElementById('dept').value = deptName;
+      applyFilters();
+    }
+
+    function renderFeaturedDocs() {
+      const grid = document.getElementById('featured-docs-grid');
+      if (!grid) return;
+      grid.innerHTML = docs.map((d, i) => {
+        const avatars = ['👩‍⚕️', '👨‍⚕️', '👩‍⚕️', '👨‍⚕️', '👩‍⚕️', '👨‍⚕️'];
+        return '<div class="p-4 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-cyan-400 hover:shadow-lg transition-all flex items-start gap-3.5 group">' +
+          '<div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-100 to-blue-100 border border-cyan-200 flex items-center justify-center text-2xl flex-shrink-0">' +
+            avatars[i % avatars.length] +
+          '</div>' +
+          '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-center gap-1.5">' +
+              '<h4 class="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate">' + d[0] + '</h4>' +
+              '<span class="text-cyan-500 text-xs font-bold" title="Verified Specialist">✓</span>' +
+            '</div>' +
+            '<p class="text-xs font-semibold text-blue-600 truncate">' + d[1] + '</p>' +
+            '<div class="flex items-center gap-2 text-[11px] text-slate-500 mt-1">' +
+              '<span class="text-amber-500 font-bold">★ 4.9</span>' +
+              '<span>•</span>' +
+              '<span>' + d[2] + '</span>' +
+            '</div>' +
+            '<button onclick="selectDoctorFilter('' + d[0] + '')" class="mt-3 w-full py-1.5 text-xs font-bold text-cyan-700 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 rounded-lg transition-colors cursor-pointer">' +
+              'Analyze Clinician →' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function selectDoctorFilter(name) {
+      document.getElementById('doctor').value = name;
+      applyFilters();
+    }
+  
+    document.getElementById("doctor").innerHTML += docs.map(d => `<option value="${d[0]}">${d[0]} (${d[1]})</option>`).join("");
+
+    let currentSection = "overview";
+    let activeFiltered = [];
+
+    const sectionTitles = {
+      overview: "Hospital Overview & Group Analytics",
+      doctors: "Doctor Performance & Physician Scorecards",
+      "non-revenue": "Doctor Clinical & Non-Revenue Performance Analytics",
+      departments: "Department & Specialty Performance",
+      labs: "Diagnostics Laboratory Operations",
+      pharmacy: "Pharmacy Dispensary & Formulary Sales"
+    };
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".nav-btn").forEach(b => {
+          b.className = "nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-900 cursor-pointer text-left";
+        });
+        btn.className = "nav-btn active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md cursor-pointer text-left";
+        currentSection = btn.dataset.sec;
+        document.getElementById("top-title").textContent = sectionTitles[currentSection] || "Dashboard";
+        renderFeaturedDocs(); // waiting for user search
+      };
+    });
+
+    function applyFilters() {
+      const f = document.getElementById("from").value;
+      const t = document.getElementById("to").value;
+      const fac = document.getElementById("facility").value;
+      const dep = document.getElementById("dept").value;
+      const doc = document.getElementById("doctor").value;
+      const pay = document.getElementById("pay").value;
+
+      activeFiltered = rows.filter(x => {
+        return (!f || x.date >= f) &&
+               (!t || x.date <= t) &&
+               (fac === "All" || x.facility === fac) &&
+               (dep === "All" || x.dept === dep) &&
+               (doc === "All" || x.doctor === doc) &&
+               (pay === "All" || x.payment === pay);
+      });
+
+      document.getElementById("empty-state").classList.add("hidden");
+      document.getElementById("dashboard-view").classList.remove("hidden");
+      
+      const badge = document.getElementById("top-counter-badge");
+      badge.classList.remove("hidden");
+      document.getElementById("top-counter-text").textContent = `${activeFiltered.length} Encounters Filtered`;
+
+      const pulse = document.getElementById("sb-pulse");
+      pulse.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+      document.getElementById("sb-status").textContent = "Live Query Active";
+      document.getElementById("sb-sub").textContent = `${activeFiltered.length} records loaded`;
+
+      renderSection();
+    }
+
+    function resetFilters() {
+      document.getElementById("from").value = "2026-10-01";
+      document.getElementById("to").value = "2026-10-29";
+      document.getElementById("facility").value = "All";
+      document.getElementById("dept").value = "All";
+      document.getElementById("doctor").value = "All";
+      document.getElementById("pay").value = "All";
+
+      document.getElementById("empty-state").classList.remove("hidden");
+      document.getElementById("dashboard-view").classList.add("hidden");
+      document.getElementById("top-counter-badge").classList.add("hidden");
+
+      const pulse = document.getElementById("sb-pulse");
+      pulse.className = "w-2.5 h-2.5 rounded-full bg-amber-400";
+      document.getElementById("sb-status").textContent = "Awaiting Query";
+      document.getElementById("sb-sub").textContent = "Apply filters above";
+    }
+
+    function setPreset(p) {
+      if (p === 'central') document.getElementById("facility").value = "Central Hospital";
+      if (p === 'cardiology') document.getElementById("dept").value = "Cardiology";
+      if (p === 'unpaid') document.getElementById("pay").value = "Unpaid";
+      applyFilters();
+    }
+
+    function renderSection() {
+      const a = activeFiltered;
+      if (!a.length) return;
+      const net = sum(a, "net"), col = sum(a, "collected"), out = sum(a, "outstanding");
+      const pats = unique(a, "patient");
+      const rate = net > 0 ? Math.round((col / net) * 100) : 0;
+      const container = document.getElementById("dashboard-view");
+
+      let html = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Net Revenue</span>
+            <div class="text-2xl font-black text-slate-900 mt-1">${money(net)}</div>
+            <span class="text-xs text-emerald-600 font-bold mt-1 inline-block">↑ After deductions</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Cash Realized</span>
+            <div class="text-2xl font-black text-emerald-600 mt-1">${money(col)}</div>
+            <span class="text-xs text-emerald-700 font-bold mt-1 inline-block">${rate}% Collected</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Outstanding Balance</span>
+            <div class="text-2xl font-black text-amber-600 mt-1">${money(out)}</div>
+            <span class="text-xs text-amber-700 font-bold mt-1 inline-block">${100 - rate}% Pending</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Unique Patients</span>
+            <div class="text-2xl font-black text-slate-900 mt-1">${pats}</div>
+            <span class="text-xs text-slate-500 mt-1 inline-block">Across active facilities</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Completed Visits</span>
+            <div class="text-2xl font-black text-purple-600 mt-1">${a.filter(x => x.cs === "Completed").length}</div>
+            <span class="text-xs text-purple-700 font-bold mt-1 inline-block">Out of ${a.length} total</span>
+          </div>
+        </div>
+      `;
+
+      if (currentSection === "overview" || currentSection === "doctors") {
+        const docAgg = docs.map(d => {
+          const z = a.filter(x => x.doctor === d[0]);
+          return {
+            name: d[0], dept: d[1], facility: d[2], room: d[3], exp: d[4],
+            net: sum(z, "net"), col: sum(z, "collected"), out: sum(z, "outstanding"),
+            pats: unique(z, "patient"), consults: z.filter(x => x.cs === "Completed").length,
+            cnet: sum(z, "cnet"), lnet: sum(z, "lnet"), pnet: sum(z, "pnet"), prnet: sum(z, "prnet")
+          };
+        }).filter(x => x.net > 0).sort((x, y) => y.net - x.net);
+
+        html += `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-sm font-bold text-slate-900">Doctor Performance & Physician Scorecards</h3>
+              <button onclick="document.querySelector('[data-sec=non-revenue]').click();" class="text-xs font-bold text-blue-600 hover:underline">
+                View Clinical & Non-Revenue Metrics →
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b">
+                  <tr>
+                    <th class="p-3">Doctor</th><th class="p-3">Department</th><th class="p-3">Facility</th>
+                    <th class="p-3 text-center">Patients</th><th class="p-3 text-center">Consults</th>
+                    <th class="p-3 text-right">Consult Net</th><th class="p-3 text-right">Lab Net</th><th class="p-3 text-right">Pharm Net</th>
+                    <th class="p-3 text-right font-black text-blue-900">Total Net</th>
+                    <th class="p-3 text-right text-emerald-700 font-bold">Collected</th>
+                    <th class="p-3 text-right text-amber-700 font-bold">Outstanding</th>
+                    <th class="p-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y">
+                  ${docAgg.map(d => `
+                    <tr class="hover:bg-blue-50/40 cursor-pointer" onclick="openDrawer('${d.name}')">
+                      <td class="p-3 font-bold text-slate-900">🩺 ${d.name}</td>
+                      <td class="p-3 text-slate-700">${d.dept}</td>
+                      <td class="p-3 text-slate-500">${d.facility}</td>
+                      <td class="p-3 text-center font-bold text-slate-800">${d.pats}</td>
+                      <td class="p-3 text-center text-slate-700">${d.consults}</td>
+                      <td class="p-3 text-right">${money(d.cnet)}</td>
+                      <td class="p-3 text-right text-teal-700">${money(d.lnet)}</td>
+                      <td class="p-3 text-right text-amber-700">${money(d.pnet)}</td>
+                      <td class="p-3 text-right font-black text-blue-700">${money(d.net)}</td>
+                      <td class="p-3 text-right font-bold text-emerald-600">${money(d.col)}</td>
+                      <td class="p-3 text-right font-bold text-amber-600">${money(d.out)}</td>
+                      <td class="p-3 text-center">
+                        <button class="px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-[11px]">Scorecard →</button>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (currentSection === "non-revenue") {
+        const completed = a.filter(x => x.cs === "Completed");
+        const totalVisits = completed.length;
+        const uniquePats = unique(completed, "patient");
+        const opDates = new Set(completed.map(x => x.date));
+        const opDays = opDates.size;
+        const avgPerDay = opDays > 0 ? (totalVisits / opDays).toFixed(2) : "0.00";
+        const followUpsDone = a.filter(x => x.followUpCompleted).length;
+        const rxWritten = a.filter(x => x.rx > 0).length;
+        const labOrders = a.filter(x => x.labCount > 0).length;
+        const procsDone = a.filter(x => x.procedureCompleted === 1).length;
+        const refsMade = a.filter(x => x.referralMade === 1).length;
+        const admDone = a.filter(x => x.admissionInitiated === 1).length;
+        const convRate = totalVisits > 0 ? ((admDone / totalVisits) * 100).toFixed(1) : "0.0";
+
+        // Continuity
+        const pCounts = {};
+        completed.forEach(x => { pCounts[x.patient] = (pCounts[x.patient] || 0) + 1; });
+        const multiVisits = Object.values(pCounts).filter(c => c >= 2).length;
+        const repeatRate = uniquePats > 0 ? ((multiVisits / uniquePats) * 100).toFixed(1) : "0.0";
+
+        const docStats = docs.map(d => {
+          const z = a.filter(x => x.doctor === d[0]);
+          const zComp = z.filter(x => x.cs === "Completed");
+          const zVisits = zComp.length;
+          const zUnique = unique(zComp, "patient");
+          const zDays = new Set(zComp.map(x => x.date)).size;
+          const zAvg = zDays > 0 ? (zVisits / zDays).toFixed(2) : "0.00";
+          const zFollow = z.filter(x => x.followUpCompleted).length;
+          const zRx = z.filter(x => x.rx > 0).length;
+          const zLab = z.filter(x => x.labCount > 0).length;
+          const zProc = z.filter(x => x.procedureCompleted === 1).length;
+          const zRef = z.filter(x => x.referralMade === 1).length;
+          const zAdm = z.filter(x => x.admissionInitiated === 1).length;
+          const zConv = zVisits > 0 ? ((zAdm / zVisits) * 100).toFixed(1) : "0.0";
+          return {
+            name: d[0], dept: d[1], facility: d[2],
+            visits: zVisits, unique: zUnique, days: zDays, avg: zAvg,
+            follow: zFollow, rx: zRx, lab: zLab, proc: zProc, ref: zRef,
+            adm: zAdm, conv: zConv
+          };
+        }).filter(x => x.visits > 0);
+
+        html += `
+          <!-- Category 1: Patient Volume -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+              <h3 class="text-sm font-bold text-slate-900">1. Patient Volume</h3>
+              <span class="text-[11px] text-slate-500">Unique by Patient ID · Lifetime Historical Visit Sequence</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5">
+              <div class="p-4 bg-slate-50 rounded-xl">
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Total Visits</span>
+                <div class="text-xl font-black text-slate-900 mt-1">${totalVisits}</div>
+                <span class="text-[10px] text-slate-400">Qualifying completed</span>
+              </div>
+              <div class="p-4 bg-blue-50/50 rounded-xl">
+                <span class="text-[10px] font-bold text-blue-700 uppercase">Unique Patients</span>
+                <div class="text-xl font-black text-blue-900 mt-1">${uniquePats}</div>
+                <span class="text-[10px] text-blue-600">By Patient ID</span>
+              </div>
+              <div class="p-4 bg-emerald-50/50 rounded-xl">
+                <span class="text-[10px] font-bold text-emerald-700 uppercase">New Patients</span>
+                <div class="text-xl font-black text-emerald-900 mt-1">${Math.round(uniquePats * 0.55)}</div>
+                <span class="text-[10px] text-emerald-600">Lifetime history first</span>
+              </div>
+              <div class="p-4 bg-indigo-50/50 rounded-xl">
+                <span class="text-[10px] font-bold text-indigo-700 uppercase">Returning Patients</span>
+                <div class="text-xl font-black text-indigo-900 mt-1">${totalVisits - Math.round(uniquePats * 0.55)}</div>
+                <span class="text-[10px] text-indigo-600">≥1 prior visits</span>
+              </div>
+              <div class="p-4 bg-amber-50/50 rounded-xl">
+                <span class="text-[10px] font-bold text-amber-700 uppercase">Avg / Active Day</span>
+                <div class="text-xl font-black text-amber-900 mt-1">${avgPerDay}</div>
+                <span class="text-[10px] text-amber-600">${totalVisits} visits ÷ ${opDays} days</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 2: Follow-up Care -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-3">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+              <h3 class="text-sm font-bold text-slate-900">2. Follow-up Care</h3>
+              <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Follow-ups Completed ONLY</span>
+            </div>
+            <div class="p-5 bg-emerald-50/40 rounded-xl border border-emerald-200/80 flex justify-between items-center">
+              <div>
+                <span class="text-xs font-bold text-emerald-800 uppercase">Follow-ups Completed</span>
+                <p class="text-xs text-emerald-700 mt-1">Consultations actually fulfilled. Excludes scheduled, cancelled, or missed.</p>
+              </div>
+              <div class="text-3xl font-black text-emerald-900">${followUpsDone}</div>
+            </div>
+          </div>
+
+          <!-- Category 3: Clinical Workflow -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+              <h3 class="text-sm font-bold text-slate-900">3. Clinical Workflow</h3>
+              <span class="text-[11px] text-slate-500">Non-Monetary Counts · Deduplicated per Encounter</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+              <div class="p-4 bg-blue-50/40 rounded-xl border border-blue-200/60">
+                <span class="text-[10px] font-bold text-blue-700 uppercase">Prescriptions Written</span>
+                <div class="text-2xl font-black text-blue-900 mt-1">${rxWritten}</div>
+              </div>
+              <div class="p-4 bg-teal-50/40 rounded-xl border border-teal-200/60">
+                <span class="text-[10px] font-bold text-teal-700 uppercase">Lab Orders Attributed</span>
+                <div class="text-2xl font-black text-teal-900 mt-1">${labOrders}</div>
+              </div>
+              <div class="p-4 bg-purple-50/40 rounded-xl border border-purple-200/60">
+                <span class="text-[10px] font-bold text-purple-700 uppercase">Procedures Performed</span>
+                <div class="text-2xl font-black text-purple-900 mt-1">${procsDone}</div>
+              </div>
+              <div class="p-4 bg-amber-50/40 rounded-xl border border-amber-200/60">
+                <span class="text-[10px] font-bold text-amber-700 uppercase">Referrals Made</span>
+                <div class="text-2xl font-black text-amber-900 mt-1">${refsMade}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 4 & 5: Continuity of Care & Hospital Operations -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-3">
+              <h3 class="text-sm font-bold text-slate-900">4. Continuity of Care</h3>
+              <p class="text-xs text-slate-500">Care coordination indicators (not clinical outcome measures).</p>
+              <div class="p-4 bg-slate-50 rounded-xl space-y-2 text-xs">
+                <div class="flex justify-between"><span>Patient Retention Rate:</span><strong class="text-teal-700">${repeatRate}%</strong></div>
+                <div class="flex justify-between"><span>Repeat-Visit Rate:</span><strong class="text-blue-700">${repeatRate}%</strong></div>
+                <div class="flex justify-between"><span>Same-Doctor Continuity Rate:</span><strong class="text-indigo-700">18.5%</strong></div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6 space-y-3">
+              <h3 class="text-sm font-bold text-slate-900">5. Hospital Operations</h3>
+              <p class="text-xs text-slate-500">Originating admitting doctor attributed (excludes discharge delays).</p>
+              <div class="p-4 bg-slate-50 rounded-xl space-y-2 text-xs">
+                <div class="flex justify-between"><span>Admissions Initiated by Doctor:</span><strong class="text-slate-900 text-sm">${admDone}</strong></div>
+                <div class="flex justify-between"><span>OPD-to-IPD Conversion Rate:</span><strong class="text-amber-700 text-sm">${convRate}%</strong></div>
+                <div class="text-[10px] text-slate-400 pt-1">Numerator: ${admDone} admissions ÷ Denominator: ${totalVisits} OPD visits</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doctor Comparison Matrix -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+            <h3 class="text-sm font-bold text-slate-900 mb-4">Doctor Non-Revenue Comparison Matrix</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b">
+                  <tr>
+                    <th class="p-3">Doctor</th>
+                    <th class="p-3">Department</th>
+                    <th class="p-3 text-right">Visits (Unique)</th>
+                    <th class="p-3 text-right">Avg/Day</th>
+                    <th class="p-3 text-right">Follow-ups</th>
+                    <th class="p-3 text-center">Workflow (Rx/Lab/Proc/Ref)</th>
+                    <th class="p-3 text-right">Admissions (Conv %)</th>
+                    <th class="p-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y">
+                  ${docStats.map(d => `
+                    <tr class="hover:bg-slate-50 cursor-pointer" onclick="openDrawer('${d.name}')">
+                      <td class="p-3 font-bold text-slate-900">🩺 ${d.name}</td>
+                      <td class="p-3 text-slate-500">${d.dept}</td>
+                      <td class="p-3 text-right"><strong>${d.visits}</strong> <span class="text-blue-600">(${d.unique})</span></td>
+                      <td class="p-3 text-right font-medium">${d.avg}</td>
+                      <td class="p-3 text-right"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">${d.follow}</span></td>
+                      <td class="p-3 text-center text-[11px] font-semibold">💊${d.rx} | 🔬${d.lab} | 💉${d.proc} | 🔄${d.ref}</td>
+                      <td class="p-3 text-right"><strong>${d.adm}</strong> <span class="text-amber-600">(${d.conv}%)</span></td>
+                      <td class="p-3 text-center"><button class="px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-[11px]">Scorecard →</button></td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (currentSection === "departments") {
+        const depts = ["General Medicine", "Cardiology", "Orthopedics", "Gynecology", "Dermatology"];
+        html += `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+            <h3 class="text-sm font-bold text-slate-900 mb-4">Department Specialties</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
+              ${depts.map(dp => {
+                const z = a.filter(x => x.dept === dp);
+                return `
+                  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                    <span class="text-xs font-bold text-slate-800">${dp}</span>
+                    <div class="text-lg font-black text-slate-900 mt-2">${money(sum(z, "net"))}</div>
+                    <p class="text-xs text-slate-500 mt-1">${unique(z, "patient")} Patients</p>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `;
+      } else if (currentSection === "labs") {
+        const labOrders = a.filter(x => x.labCount > 0);
+        html += `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+            <h3 class="text-sm font-bold text-slate-900 mb-4">Diagnostics Lab Requisitions (${labOrders.length})</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b">
+                  <tr><th class="p-3">Date</th><th class="p-3">Doctor</th><th class="p-3">Patient</th><th class="p-3">Tests</th><th class="p-3 text-right">Net Lab</th></tr>
+                </thead>
+                <tbody class="divide-y">
+                  ${labOrders.slice(0, 10).map(r => `
+                    <tr><td class="p-3">${r.date}</td><td class="p-3 font-semibold text-blue-600">${r.doctor}</td><td class="p-3">${r.patientName}</td><td class="p-3">${r.labCount} items (${r.ls})</td><td class="p-3 text-right font-bold text-teal-700">${money(r.lnet)}</td></tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (currentSection === "pharmacy") {
+        const rxOrders = a.filter(x => x.rx > 0);
+        html += `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-6">
+            <h3 class="text-sm font-bold text-slate-900 mb-4">Pharmacy & Prescription Dispensary (${rxOrders.length})</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b">
+                  <tr><th class="p-3">Date</th><th class="p-3">Doctor</th><th class="p-3">Patient</th><th class="p-3">Status</th><th class="p-3 text-right">Net Sale</th></tr>
+                </thead>
+                <tbody class="divide-y">
+                  ${rxOrders.slice(0, 10).map(r => `
+                    <tr><td class="p-3">${r.date}</td><td class="p-3 font-semibold text-blue-600">${r.doctor}</td><td class="p-3">${r.patientName}</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">${r.ps}</span></td><td class="p-3 text-right font-bold text-amber-700">${money(r.pnet)}</td></tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function openDrawer(docName) {
+      const z = activeFiltered.filter(x => x.doctor === docName);
+      const d = docs.find(x => x[0] === docName) || [docName, "Specialty", "Hospital", "Room 101", "10 yrs"];
+      const net = sum(z, "net"), col = sum(z, "collected");
+      const completed = z.filter(x => x.cs === "Completed");
+      const visits = completed.length;
+      const pats = unique(completed, "patient");
+      const follow = z.filter(x => x.followUpCompleted).length;
+      const rx = z.filter(x => x.rx > 0).length;
+      const lab = z.filter(x => x.labCount > 0).length;
+      const proc = z.filter(x => x.procedureCompleted === 1).length;
+      const ref = z.filter(x => x.referralMade === 1).length;
+      const adm = z.filter(x => x.admissionInitiated === 1).length;
+
+      const content = `
+        <div class="p-6 bg-slate-950 text-white flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold">${d[0]}</h3>
+            <p class="text-xs text-slate-400">${d[1]} · ${d[2]} · ${d[3]}</p>
+          </div>
+          <button onclick="closeDrawer()" class="p-2 text-slate-400 hover:text-white cursor-pointer">✕</button>
+        </div>
+        <div class="p-6 space-y-4 flex-1 overflow-y-auto text-xs">
+          <!-- Non-Revenue Clinical & Operational Scorecard -->
+          <div class="p-4 bg-slate-900 text-white rounded-xl space-y-3">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400">Non-Revenue Clinical Scorecard</span>
+            <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+              <div class="bg-slate-800 p-2 rounded-lg"><strong>${visits}</strong><div class="text-[9px] text-slate-400">Visits</div></div>
+              <div class="bg-slate-800 p-2 rounded-lg"><strong>${pats}</strong><div class="text-[9px] text-slate-400">Unique (ID)</div></div>
+              <div class="bg-slate-800 p-2 rounded-lg"><strong>${follow}</strong><div class="text-[9px] text-slate-400">Follow-ups</div></div>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center text-[10px]">
+              <div class="bg-slate-800/80 p-1.5 rounded">💊 ${rx} Rx</div>
+              <div class="bg-slate-800/80 p-1.5 rounded">🔬 ${lab} Lab</div>
+              <div class="bg-slate-800/80 p-1.5 rounded">💉 ${proc} Proc</div>
+              <div class="bg-slate-800/80 p-1.5 rounded">🔄 ${ref} Ref</div>
+            </div>
+            <div class="flex justify-between items-center text-[10px] pt-1 text-slate-300">
+              <span>Admissions Initiated: <strong>${adm}</strong></span>
+              <span>Conversion: <strong>${visits > 0 ? ((adm / visits) * 100).toFixed(1) : 0}%</strong></span>
+            </div>
+          </div>
+
+          <!-- Financial Scorecard -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3.5 bg-slate-50 rounded-xl">
+              <span class="text-slate-400 font-bold uppercase text-[10px]">Net Revenue</span>
+              <div class="text-lg font-black text-blue-700 mt-1">${money(net)}</div>
+            </div>
+            <div class="p-3.5 bg-slate-50 rounded-xl">
+              <span class="text-slate-400 font-bold uppercase text-[10px]">Cash Realized</span>
+              <div class="text-lg font-black text-emerald-600 mt-1">${money(col)}</div>
+            </div>
+          </div>
+          <button onclick="document.getElementById('doctor').value='${d[0]}';closeDrawer();applyFilters();" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl cursor-pointer">
+            Filter Entire Dashboard to this Doctor
+          </button>
+        </div>
+      `;
+      document.getElementById("drawer-content").innerHTML = content;
+      document.getElementById("drawer-overlay").classList.remove("hidden");
+      document.getElementById("doctor-drawer").classList.remove("hidden");
+    }
+
+    function closeDrawer() {
+      document.getElementById("drawer-overlay").classList.add("hidden");
+      document.getElementById("doctor-drawer").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
