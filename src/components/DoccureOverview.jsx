@@ -40,6 +40,7 @@ import { DOCTORS, FACILITIES, DEPARTMENTS, formatMoney, formatNum } from "../dat
 import { PAY_MODES, revenueTrend, summarise as summariseDoctor } from "../data/doctorAnalytics";
 import { summariseHospital, applyFilters, series, previousRange, money, INVOICE_TYPES } from "../data/hospitalAnalytics";
 import { Section, Card, Stat, StatStrip, Donut, Columns, HBars, Lines, COLORS } from "./doctor/ChartKit";
+const Strip = StatStrip;
 import { BarSeries, BarAndLine } from "./doctor/MoreCharts";
 import { DoccureDropdown, DoccureDatePicker } from "./common";
 import TopSellers from "./doctor/TopSellers";
