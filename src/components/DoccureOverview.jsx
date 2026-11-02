@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { DOCTORS, FACILITIES, DEPARTMENTS, formatMoney, formatNum } from "../data/mockData";
 import { PAY_MODES, revenueTrend, summarise as summariseDoctor } from "../data/doctorAnalytics";
-import { summariseHospital, applyFilters, series, previousRange, money, INVOICE_TYPES } from "../data/hospitalAnalytics";
+import { summariseHospital, applyFilters, series, previousRange, money, SERVICE_OPTIONS } from "../data/hospitalAnalytics";
 import { Section, Card, Stat, StatStrip, Donut, Columns, HBars, Lines, COLORS } from "./doctor/ChartKit";
 const Strip = StatStrip;
 import { BarSeries, BarAndLine } from "./doctor/MoreCharts";
@@ -85,7 +85,7 @@ const TABS = [
 const TAB_COLORS = Object.fromEntries(TABS.map((t) => [t.id, t.color]));
 const TAB_ACTIVE = Object.fromEntries(TABS.map((t) => [t.id, t.activeBg]));
 
-const FILTER_KEYS = ["facility", "dept", "doctor", "payMode", "invoiceType"];
+const FILTER_KEYS = ["facility", "dept", "doctor", "payMode", "service"];
 
 const delta = (cur, prev) => (prev > 0 ? Math.round(((cur - prev) / prev) * 100) : null);
 
@@ -286,7 +286,7 @@ export default function DoccureOverview({
     dept: "All",
     doctor: "All",
     payMode: "All",
-    invoiceType: "All"
+    service: "All"
   };
 
   const [draft, setDraft] = useState(initial);
@@ -470,9 +470,9 @@ export default function DoccureOverview({
       </a>
 
       {/* 1. Ultra-Premium Command Center Header & Filter Bar */}
-      <div className="relative z-20 bg-white rounded-3xl border border-slate-200/90 shadow-[0_8px_32px_rgba(15,23,42,0.06)] overflow-hidden">
+      <div className="relative z-20 bg-white rounded-3xl border border-slate-200/90 shadow-[0_8px_32px_rgba(15,23,42,0.06)]">
         {/* Banner with Deep Obsidian & Sapphire Ambient Glow */}
-        <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 px-6 py-7 sm:px-8 text-white border-b border-slate-800/80">
+        <div className="relative rounded-t-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 px-6 py-7 sm:px-8 text-white border-b border-slate-800/80">
           <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute -right-10 -top-24 w-96 h-96 rounded-full bg-blue-600/15 blur-3xl" />
             <div className="absolute right-72 -bottom-24 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl" />
@@ -542,7 +542,7 @@ export default function DoccureOverview({
         </div>
 
         {/* Filter Controls Ribbon */}
-        <div className="bg-slate-50/80 p-5 sm:p-6 space-y-4 no-print border-t border-slate-200/80">
+        <div className="bg-slate-50/80 rounded-b-3xl p-5 sm:p-6 space-y-4 no-print border-t border-slate-200/80">
           {/* Quick Date Range Preset Pills */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/70">
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
@@ -607,10 +607,10 @@ export default function DoccureOverview({
                     </button>
                   </span>
                 )}
-                {filters.invoiceType !== "All" && (
+                {filters.service !== "All" && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
-                    Type: {filters.invoiceType}
-                    <button onClick={() => removeFilter("invoiceType")} className="hover:text-purple-900 cursor-pointer">
+                    Service: {filters.service}
+                    <button onClick={() => removeFilter("service")} className="hover:text-purple-900 cursor-pointer">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
@@ -649,6 +649,7 @@ export default function DoccureOverview({
             />
             <DoccureDropdown
               compact
+              menuAlign="right"
               active={draft.payMode !== "All"}
               label="Payment channel"
               value={draft.payMode}
@@ -657,11 +658,12 @@ export default function DoccureOverview({
             />
             <DoccureDropdown
               compact
-              active={draft.invoiceType !== "All"}
-              label="Invoice type"
-              value={draft.invoiceType}
-              onChange={set("invoiceType")}
-              options={[{ value: "All", label: "All Types" }, ...INVOICE_TYPES.map((i) => ({ value: i.id, label: i.label }))]}
+              menuAlign="right"
+              active={draft.service !== "All"}
+              label="Service"
+              value={draft.service}
+              onChange={set("service")}
+              options={[{ value: "All", label: "All Services" }, ...SERVICE_OPTIONS.map((i) => ({ value: i.id, label: i.label }))]}
             />
           </div>
 

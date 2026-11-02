@@ -25,6 +25,7 @@ export default function DoccureDropdown({
   className = "",
   size = "md", // "sm" | "md"
   compact = false, // refined 36px control used on the analytics pages
+  menuAlign = "left", // "right" keeps the list inside the screen for the last filters in a row
   active = false // highlights a filter that is currently narrowing the data
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -141,7 +142,7 @@ export default function DoccureDropdown({
 
       {/* Floating Dropdown Menu */}
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white border border-gray-200/90 rounded-2xl shadow-xl overflow-hidden animate-fadeIn min-w-[200px]">
+        <div className={`absolute ${menuAlign === "right" ? "right-0" : "left-0 right-0"} top-full mt-1.5 z-50 bg-white border border-gray-200/90 rounded-2xl shadow-xl overflow-hidden animate-fadeIn min-w-[200px]`}>
           {/* Quick Search inside dropdown if more than 5 options */}
           {normalizedOptions.length > 5 && (
             <div className="p-2 border-b border-gray-100 bg-gray-50/60">

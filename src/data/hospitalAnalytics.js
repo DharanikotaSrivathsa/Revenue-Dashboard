@@ -14,6 +14,14 @@ import { summarise as summariseDoctor, bucketKey, bucketLabel, bucketKeysInRange
 
 export { previousRange };
 
+// Service line a visit belongs to (same values as the Service filter on the other pages)
+export const SERVICE_OPTIONS = [
+  { id: "OPD", label: "OPD · Outpatient" },
+  { id: "IPD", label: "IPD · Inpatient" },
+  { id: "OT", label: "OT · Operation Theatre" },
+  { id: "Walk-in", label: "Walk-in · Counter" }
+];
+
 export const INVOICE_TYPES = [
   { id: "REGISTRATION", label: "Registration" },
   { id: "CONSULTATION", label: "Consultation" },
@@ -60,7 +68,7 @@ export const applyFilters = (list, f) =>
       (f.dept === "All" || e.department === f.dept) &&
       (f.doctor === "All" || e.doctorName === f.doctor) &&
       (f.payMode === "All" || e.payMode === f.payMode) &&
-      (f.invoiceType === "All" || e.invoiceType === f.invoiceType)
+      (!f.service || f.service === "All" || e.serviceType === f.service)
   );
 
 // Per day / week / month series. fields: { name: (encounter) => number }

@@ -27,6 +27,7 @@ import { PAY_MODES, summarise, revenueTrend, dailySeries, previousRange, invoice
 import { Section, Card, Stat, MiniStat, Donut, Columns, HBars, Lines, Progress, COLORS } from "./doctor/ChartKit";
 import { Waterfall, FunnelView, StackedMoney } from "./doctor/SpecialCharts";
 import { DoccureDropdown, DoccureDatePicker } from "./common";
+import DoctorServiceExplorer from "./doctor/DoctorServiceExplorer";
 
 const PAY_COLORS = { Cash: COLORS.teal, Card: COLORS.blue, UPI: COLORS.indigo, Insurance: COLORS.sky, "Bank transfer": COLORS.amber };
 const STATUS_STYLE = {
@@ -91,7 +92,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
       const range = previousRange(filters.from, filters.to);
       const previous = range ? summarise(applyFilters(mine, { ...filters, ...range })) : null;
       const scoped = applyFilters(mine, filters);
-      return { current, previous, scoped, invoices: invoiceRows(current.rows) };
+      return { current, previous, scoped, scopedAll: applyFilters(encounters, filters), invoices: invoiceRows(current.rows) };
     } catch (error) {
       return { error };
     }
@@ -121,7 +122,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
     );
   }
 
-  const { current: c, previous: p, scoped, invoices } = result;
+  const { current: c, previous: p, scoped, scopedAll, invoices } = result;
   const { revenue: r, nonRev, clinical, ops } = c;
   const isEmpty = scoped.length === 0;
 
@@ -301,6 +302,8 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+
+          <DoctorServiceExplorer doctorName={doctor.name} scoped={scopedAll} />
 
           {/* 4. Payment performance */}
           <Section title="Payment performance" subtitle="Collections come from payments allocated to this doctor's share of each bill.">
