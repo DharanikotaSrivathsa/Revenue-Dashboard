@@ -4,7 +4,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Search, X, FlaskConical, Layers, Syringe, Package as PackageIcon, Pill } from "lucide-react";
 import { buildServiceIndex, searchServices, SERVICE_TYPES } from "../../data/doctorServices";
 import { formatMoney, formatNum } from "../../data/mockData";
-import { Section, Card, StatStrip, HBars } from "./ChartKit";
+import { Section, Card, StatStrip } from "./ChartKit";
 
 const ICONS = { test: FlaskConical, profile: Layers, procedure: Syringe, package: PackageIcon, medication: Pill };
 const typeOf = (id) => SERVICE_TYPES.find((t) => t.id === id);
@@ -30,7 +30,6 @@ export default function DoctorServiceExplorer({ doctorName, scoped }) {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState("all");
   const [picked, setPicked] = useState(null);
-  const [metric, setMetric] = useState("revenue");
   const [open, setOpen] = useState(false);
   const [hi, setHi] = useState(0);
   const inputRef = useRef(null);
@@ -85,7 +84,7 @@ export default function DoctorServiceExplorer({ doctorName, scoped }) {
   return (
     <Section
       title="Doctor × service"
-      subtitle={`Search any lab test, profile, procedure, package or medicine to see how ${short} did against it and how other doctors compare.`}
+      subtitle={`Search any lab test, profile, procedure, package or medicine to see what ${short} ordered, performed or prescribed.`}
     >
       {/* Search box */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-[0_1px_2px_rgba(16,24,40,0.04)] p-4 space-y-3">
@@ -231,43 +230,23 @@ export default function DoctorServiceExplorer({ doctorName, scoped }) {
                 </div>
                 <p className="text-sm text-slate-600 mt-1">
                   {active.revenue > 0 ? (
-                    <><strong className="text-slate-900">{short}</strong> sold {formatNum(active.units)} {unitWord(active.service, active.units)} for <strong className="text-slate-900">{formatMoney(active.revenue)}</strong>. That is {active.sharePct}% of the hospital's sales of this service, ranked <strong className="text-slate-900">#{active.rank}</strong> of {active.doctorCount} doctor{active.doctorCount === 1 ? "" : "s"}.</>
+                    <><strong className="text-slate-900">{short}</strong> sold {formatNum(active.units)} {unitWord(active.service, active.units)} for <strong className="text-slate-900">{formatMoney(active.revenue)}</strong>.</>
                   ) : (
-                    <><strong className="text-slate-900">{short}</strong> has not ordered this service in the selected period. {active.doctorCount} other doctor{active.doctorCount === 1 ? " has" : "s have"}; see the comparison below.</>
+                    <><strong className="text-slate-900">{short}</strong> has not ordered this service in the selected period.</>
                   )}
                 </p>
               </div>
 
               <StatStrip
                 accent={typeOf(active.service).color}
-                cols="grid-cols-2 md:grid-cols-3"
+                cols="grid-cols-2 md:grid-cols-4"
                 items={[
-                  { label: `${short}'s revenue`, value: formatMoney(active.revenue) },
-                  { label: `${short}'s ${typeOf(active.service).unit}`, value: formatNum(active.units) },
+                  { label: "Revenue", value: formatMoney(active.revenue) },
+                  { label: typeOf(active.service).unit[0].toUpperCase() + typeOf(active.service).unit.slice(1), value: formatNum(active.units) },
                   { label: "Patients", value: formatNum(active.patients) },
-                  { label: "Average per unit", value: active.units > 0 ? formatMoney(active.avgPerUnit) : "—" },
-                  { label: "Hospital total", value: formatMoney(active.hospitalRevenue) },
-                  { label: "Share of hospital", value: `${active.sharePct}%`, tone: "text-blue-700" }
+                  { label: "Average per unit", value: active.units > 0 ? formatMoney(active.avgPerUnit) : "—" }
                 ]}
               />
-
-              <Card
-                title={`Every doctor's ${metric === "revenue" ? "revenue" : typeOf(active.service).unit} for this service`}
-                subtitle={`${short} is highlighted`}
-                action={
-                  <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-lg text-xs font-medium">
-                    {[["revenue", "Revenue"], ["units", "Units"]].map(([k, l]) => (
-                      <button key={k} onClick={() => setMetric(k)} className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${metric === k ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-800"}`}>{l}</button>
-                    ))}
-                  </div>
-                }
-              >
-                <HBars
-                  money={metric === "revenue"}
-                  height={Math.max(200, active.doctors.length * 38 + 40)}
-                  data={active.doctors.map((d) => ({ name: d.name.replace("Dr. ", ""), value: metric === "revenue" ? d.revenue : d.units, color: d.name === doctorName ? typeOf(active.service).color : "#cbd5e1" }))}
-                />
-              </Card>
 
               <Card title={`${short}'s bills for this service`} subtitle={active.bills.length ? `${active.bills.length} bill${active.bills.length === 1 ? "" : "s"}, latest first` : undefined}>
                 {active.bills.length === 0 ? (

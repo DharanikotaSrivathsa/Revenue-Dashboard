@@ -209,7 +209,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               <DoccureDropdown label="Payment channel" icon={CreditCard} value={draft.payMode} onChange={setFilter("payMode")} options={[{ value: "All", label: "All channels" }, ...PAY_MODES.map((m) => ({ value: m.id, label: m.label }))]} />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              <span className={`text-xs font-semibold ${badRange ? "text-rose-600" : isDirty ? "text-amber-700" : "text-slate-400"}`}>
+              <span role="status" aria-live="polite" className={`text-xs font-semibold ${badRange ? "text-rose-600" : isDirty ? "text-amber-700" : "text-slate-400"}`}>
                 {badRange ? "From date must be on or before To date." : isDirty ? "Filters changed. Press Apply to update the page." : `Showing ${formatNum(scoped.length)} records`}
               </span>
               <div className="flex items-center gap-2">
