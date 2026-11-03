@@ -36,6 +36,11 @@ const STATUS_STYLE = {
   Unpaid: "bg-rose-50 text-rose-700 border-rose-200"
 };
 
+// Sub-categories of the doctor overview. Each has its own colour so it is easy to tell where you are.
+const TABS = ["Revenue", "Services", "Payments", "Patients", "Clinical", "Operations"];
+const TAB_COLORS = { Revenue: "#2563eb", Services: "#7c3aed", Payments: "#0d9488", Patients: "#4f46e5", Clinical: "#0284c7", Operations: "#d97706" };
+const TAB_ACTIVE = { Revenue: "#1d4ed8", Services: "#6d28d9", Payments: "#0f766e", Patients: "#4338ca", Clinical: "#0369a1", Operations: "#b45309" };
+
 const applyFilters = (list, f) =>
   list.filter(
     (e) =>
@@ -70,6 +75,8 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
   const [filters, setFilters] = useState(initialFilters);
   const [trendView, setTrendView] = useState("daily");
   const [showAllInvoices, setShowAllInvoices] = useState(false);
+  const [tab, setTab] = useState("Revenue");
+  const [printAll, setPrintAll] = useState(false);
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState(0);
 
@@ -172,7 +179,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               <button onClick={downloadCSV} className="h-8 px-3 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1.5 cursor-pointer">
                 <Download className="w-3.5 h-3.5" /> Export CSV
               </button>
-              <button onClick={() => window.print()} className="h-8 px-3 rounded-lg bg-slate-900 text-xs font-bold text-white hover:bg-slate-800 inline-flex items-center gap-1.5 cursor-pointer">
+              <button onClick={() => { setPrintAll(true); setTimeout(() => { window.print(); setPrintAll(false); }, 900); }} className="h-8 px-3 rounded-lg bg-slate-900 text-xs font-bold text-white hover:bg-slate-800 inline-flex items-center gap-1.5 cursor-pointer">
                 <Printer className="w-3.5 h-3.5" /> Print / Save PDF
               </button>
             </div>
@@ -243,7 +250,39 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
           </div>
 
           {/* 3. Revenue performance */}
-          <Section title="Revenue performance" subtitle="Billed, net and collected amounts are kept separate. Percent change compares with the previous period of the same length.">
+          <div
+            role="tablist"
+            aria-label="Doctor overview sections"
+            className="flex items-center gap-2 overflow-x-auto pb-1 no-print"
+            onKeyDown={(e) => {
+              if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+              const next = TABS[(TABS.indexOf(tab) + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length];
+              setTab(next);
+              e.currentTarget.querySelector(`[data-tab="${next}"]`)?.focus();
+            }}
+          >
+            {TABS.map((name) => (
+              <button
+                key={name}
+                role="tab"
+                data-tab={name}
+                aria-selected={tab === name}
+                tabIndex={tab === name ? 0 : -1}
+                onClick={() => setTab(name)}
+                style={tab === name ? { background: TAB_ACTIVE[name], boxShadow: `0 6px 16px ${TAB_COLORS[name]}45` } : undefined}
+                className={`px-4 py-2 rounded-full text-[13px] font-medium whitespace-nowrap transition-all duration-150 cursor-pointer ${tab === name ? "text-white" : "bg-white ring-1 ring-inset ring-slate-200 text-slate-700 hover:ring-slate-300 hover:text-slate-900"}`}
+              >
+                <span className="inline-flex items-center gap-2">
+                  <span aria-hidden="true" className="w-2 h-2 rounded-full" style={{ background: tab === name ? "#fff" : TAB_COLORS[name] }} />
+                  {name}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div role="tabpanel" aria-label={`${tab} report`} className="space-y-8">
+          {(tab === "Revenue" || printAll) && (
+          <Section accent={TAB_COLORS.Revenue} title="Revenue performance" subtitle="Billed, net and collected amounts are kept separate. Percent change compares with the previous period of the same length.">
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-3">
               <MiniStat label="Consultation revenue" value={formatMoney(r.consultation)} />
               <MiniStat label="Follow-up revenue" value={formatMoney(r.followup)} />
@@ -302,11 +341,15 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+          )}
 
+          {(tab === "Services" || printAll) && (
           <DoctorServiceExplorer doctorName={doctor.name} scoped={scopedAll} />
+          )}
 
           {/* 4. Payment performance */}
-          <Section title="Payment performance" subtitle="Collections come from payments allocated to this doctor's share of each bill.">
+          {(tab === "Payments" || printAll) && (
+          <Section accent={TAB_COLORS.Payments} title="Payment performance" subtitle="Collections come from payments allocated to this doctor's share of each bill.">
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3">
               {c.payModes.map((m) => (
                 <MiniStat key={m.id} label={`${m.label} collections`} value={formatMoney(m.value)} />
@@ -332,9 +375,11 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+          )}
 
           {/* 5. Patient analytics */}
-          <Section title="Patient analytics" subtitle="Counted from completed consultations.">
+          {(tab === "Patients" || printAll) && (
+          <Section accent={TAB_COLORS.Patients} title="Patient analytics" subtitle="Counted from completed consultations.">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <MiniStat label="Total patient visits" value={formatNum(nonRev.totalPatientVisits)} />
               <MiniStat label="Unique patients" value={formatNum(nonRev.uniquePatients)} />
@@ -363,9 +408,11 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+          )}
 
           {/* 6. Clinical workflow */}
-          <Section title="Clinical workflow" subtitle="Completed procedures only. Imaging is not counted as a laboratory investigation.">
+          {(tab === "Clinical" || printAll) && (
+          <Section accent={TAB_COLORS.Clinical} title="Clinical workflow" subtitle="Completed procedures only. Imaging is not counted as a laboratory investigation.">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               <MiniStat label="Prescriptions written" value={formatNum(clinical.prescriptions)} />
               <MiniStat label="Lab investigation orders" value={formatNum(clinical.labOrders)} />
@@ -410,9 +457,11 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+          )}
 
           {/* 7. Hospital operations and continuity */}
-          <Section title="Hospital operations and continuity" subtitle="Retention and continuity are measured within the selected reporting period.">
+          {(tab === "Operations" || printAll) && (
+          <Section accent={TAB_COLORS.Operations} title="Hospital operations and continuity" subtitle="Retention and continuity are measured within the selected reporting period.">
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
               <MiniStat label="OPD-to-IPD conversion" value={`${nonRev.opdToIpdConversionRate}%`} />
               <MiniStat label="Admissions initiated" value={formatNum(ops.admissions)} />
@@ -444,6 +493,8 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               </Card>
             </div>
           </Section>
+          )}
+          </div>
 
         </>
       )}
