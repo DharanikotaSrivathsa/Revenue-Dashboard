@@ -9,54 +9,58 @@ import { formatNum } from "../../data/mockData";
 import { KpiCard, Panel, DonutBlock, NoData, Hero } from "./LabUi";
 
 const tipStyle = { borderRadius: 12, fontSize: 12, border: "1px solid #e5e7eb" };
-const STAGE_COLORS = ["#94a3b8", "#6366f1", "#0ea5e9", "#f59e0b", "#0d9488"];
+const STAGE_COLORS = ["#64748b", "#3b82f6", "#0284c7", "#f59e0b", "#10b981"];
 
 export default function OrdersTab({ data }) {
   const { orders } = data;
   const top = Math.max(1, orders.funnel[0]?.value || 1);
   const pctOf = (n, d) => (d > 0 ? (n / d) * 100 : 0);
   const completedN = orders.funnel[4]?.value || 0;
+  const acceptedN = orders.funnel[1]?.value || 0;
+  const activeOrders = orders.total - orders.cancelled;
+  const docPortalOrders = (orders.opd || 0) + (orders.ipd || 0);
 
   return (
     <div className="space-y-6">
       <Hero
-        badge="Order Flow" icon={Workflow} title="Order & Workflow Pulse"
-        description="How orders move from request to a finished report, and where they come from."
+        badge="Clinical LIS Lifecycle" icon={Workflow} title="Order & Workflow Pulse"
+        description="Tracks specimens from Sample Collection through Acceptance, Result Entry, Pathologist Validation, and Completion."
         glowA="bg-indigo-500/25" glowB="bg-sky-500/20" gradient="from-slate-900 via-indigo-950 to-sky-900"
         rings={[
-          { id: "done", value: pctOf(completedN, orders.total - orders.cancelled), label: "Completion Rate", sub: `${completedN} completed`, from: "#5eead4", to: "#22d3ee" },
-          { id: "coll", value: pctOf(orders.samplesCollected, orders.total - orders.cancelled), label: "Sample Collection", sub: `${orders.samplesCollected} collected`, from: "#93c5fd", to: "#a78bfa" },
-          { id: "hms", value: pctOf(orders.hms, orders.total), label: "HMS Share", sub: `${orders.hms} of ${orders.total} orders`, from: "#fbcfe8", to: "#f472b6" },
+          { id: "done", value: pctOf(completedN, activeOrders), label: "Completion Rate", sub: `${completedN} completed`, from: "#5eead4", to: "#22d3ee" },
+          { id: "acc", value: pctOf(acceptedN, activeOrders), label: "Sample Acceptance", sub: `${acceptedN} accepted in lab`, from: "#93c5fd", to: "#a78bfa" },
+          { id: "hms", value: pctOf(docPortalOrders, orders.total), label: "Doctor Portal Share", sub: `${docPortalOrders} OPD/IPD orders`, from: "#fbcfe8", to: "#f472b6" },
         ]}
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <KpiCard solid label="Total Orders" value={formatNum(orders.total)} sub="Laboratory orders received" icon={ClipboardList} tone="teal" />
-        <KpiCard solid label="Samples Collected" value={formatNum(orders.samplesCollected)} sub="Collected, in progress or completed" icon={TestTube2} tone="sky" />
-        <KpiCard solid label="Samples Rejected" value={formatNum(orders.samplesRejected)} sub={`${data.quality.rejectionRate.toFixed(1)}% of collected`} icon={PackageX} tone="rose" />
+        <KpiCard solid label="Total Orders" value={formatNum(orders.total)} sub="OPD, IPD & Walk-in received" icon={ClipboardList} tone="teal" />
+        <KpiCard solid label="Samples Collected" value={formatNum(orders.samplesCollected)} sub="Specimens drawn & received" icon={TestTube2} tone="sky" />
+        <KpiCard solid label="Samples Rejected" value={formatNum(orders.samplesRejected)} sub={`${data.quality.rejectionRate.toFixed(1)}% rejected at acceptance`} icon={PackageX} tone="rose" />
         <KpiCard solid label="Tests Performed" value={formatNum(orders.testsPerformed)} sub="Across completed orders" icon={FlaskConical} tone="indigo" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <Panel className="lg:col-span-5 bg-gradient-to-br from-white to-indigo-50/60" title="HMS vs Walk-in Orders" subtitle="Hospital-originated vs direct counter orders" icon={Users}>
+        <Panel className="lg:col-span-5 bg-gradient-to-br from-white to-indigo-50/60" title="Customer Streams" subtitle="OPD Consultations · IPD Inpatient · Walk-in" icon={Users}>
           <DonutBlock
             data={[
-              { name: "HMS Orders", value: orders.hms },
-              { name: "Walk-in Orders", value: orders.walkIn },
+              { name: "OPD Orders", value: orders.opd },
+              { name: "Walk-in Counter", value: orders.walkIn },
+              { name: "IPD Inpatient", value: orders.ipd },
             ]}
             format={formatNum}
             centerLabel="Orders"
           />
         </Panel>
 
-        <Panel className="lg:col-span-7 bg-gradient-to-br from-white to-sky-50/60" title="Order Status Funnel" subtitle={`Pending → Completed · ${orders.cancelled} cancelled orders excluded`} icon={Filter}>
-          <div className="space-y-2">
+        <Panel className="lg:col-span-7 bg-gradient-to-br from-white to-sky-50/60" title="Clinical Diagnostic Workflow Funnel" subtitle={`Sample Collection → Completed · ${orders.cancelled} cancelled orders excluded`} icon={Filter}>
+          <div className="space-y-2.5">
             {orders.funnel.map((s, i) => {
               const pct = (s.value / top) * 100;
               const conv = i > 0 && orders.funnel[i - 1].value > 0 ? Math.round((s.value / orders.funnel[i - 1].value) * 100) : null;
               return (
                 <div key={s.name} className="flex items-center gap-3">
-                  <span className="w-24 shrink-0 text-xs font-semibold text-gray-600">{s.name}</span>
+                  <span className="w-36 shrink-0 text-xs font-semibold text-gray-700">{s.name}</span>
                   <div className="flex-1 flex justify-center">
                     <div
                       className="h-9 rounded-lg flex items-center justify-center text-xs font-black text-white shadow-sm transition-all"
@@ -65,12 +69,12 @@ export default function OrdersTab({ data }) {
                       {s.value}
                     </div>
                   </div>
-                  <span className="w-14 shrink-0 text-right text-[11px] font-bold text-gray-400">{conv !== null ? `${conv}%` : "—"}</span>
+                  <span className="w-14 shrink-0 text-right text-[11px] font-bold text-gray-500">{conv !== null ? `${conv}%` : "—"}</span>
                 </div>
               );
             })}
           </div>
-          <p className="text-[11px] text-gray-400 mt-3">Each stage counts orders that reached it or went further. Right column is stage-to-stage conversion.</p>
+          <p className="text-[11px] text-gray-500 mt-3">Each stage counts orders that reached it or went further. Right column is stage-to-stage conversion.</p>
         </Panel>
       </div>
 

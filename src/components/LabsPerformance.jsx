@@ -51,18 +51,31 @@ export default function LabsPerformance({ encounters = [], onSelectDoctor }) {
     // 5. Net Labs Revenue = Collected - Refunds
     const netLabsRevenue = collectedReceipts - refunds;
 
-    // Source Breakdown: MANUAL (Walk-in), OPENMRS_ORDER (OPD Doctor Queue), PACKAGE_PAID
-    const walkInEncounters = labEncounters.filter(e => e.labSource === "MANUAL");
+    // Source Breakdown: OPD, IPD, Walk-in, and Doctor Portal Packages
+    const opdEncounters = labEncounters.filter(e => !e.admissionInitiated && e.serviceType !== "IPD" && e.labSource !== "MANUAL" && e.serviceType !== "Walk-in");
+    const opdRevenue = opdEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const opdCompleted = opdEncounters.filter(e => e.labStatus === "Completed").length;
+
+    const ipdEncounters = labEncounters.filter(e => e.admissionInitiated || e.serviceType === "IPD");
+    const ipdRevenue = ipdEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const ipdCompleted = ipdEncounters.filter(e => e.labStatus === "Completed").length;
+
+    const walkInEncounters = labEncounters.filter(e => (e.labSource === "MANUAL" || e.serviceType === "Walk-in") && !e.admissionInitiated && e.serviceType !== "IPD");
     const walkInRevenue = walkInEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const walkInCompleted = walkInEncounters.filter(e => e.labStatus === "Completed").length;
 
-    const doctorOrderEncounters = labEncounters.filter(e => e.labSource === "OPENMRS_ORDER" || !e.labSource || e.labSource === "N/A");
-    const doctorOrderRevenue = doctorOrderEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const packageEncounters = labEncounters.filter(e => e.isPackagePaid || e.labSource === "PACKAGE_PAID" || e.invoiceType === "PACKAGE");
+    const packagePaidRevenue = packageEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const packageCompleted = packageEncounters.filter(e => e.labStatus === "Completed").length;
 
-    const packagePaidCount = labEncounters.filter(e => e.isPackagePaid || e.labSource === "PACKAGE_PAID").length;
+    // Order Catalog Breakdown: Individual Tests vs Profiles vs Packages
+    const singleTestEncounters = labEncounters.filter(e => !e.isPackagePaid && e.labSource !== "PACKAGE_PAID" && e.invoiceType !== "PACKAGE" && (e.labType === "INDIVIDUAL_TEST" || (!e.labType && (!e.labTests || e.labTests.length <= 1))));
+    const singleTestsRevenue = singleTestEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const singleTestsCompleted = singleTestEncounters.filter(e => e.labStatus === "Completed").length;
 
-    // Profiles vs Individual Tests (Trap 1 avoidance)
-    const profilesCount = labEncounters.filter(e => e.labType === "PROFILE_BUNDLE" || (e.labTests && e.labTests.length > 1)).length;
-    const singleTestsCount = totalReceipts - profilesCount;
+    const profileEncounters = labEncounters.filter(e => !e.isPackagePaid && e.labSource !== "PACKAGE_PAID" && e.invoiceType !== "PACKAGE" && (e.labType === "PROFILE_BUNDLE" || (e.labTests && e.labTests.length > 1)));
+    const profilesRevenue = profileEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
+    const profilesCompleted = profileEncounters.filter(e => e.labStatus === "Completed").length;
 
     const completionRate = totalReceipts > 0 ? Math.round((completed / totalReceipts) * 100) : 0;
     const avgReceiptValue = completed > 0 ? Math.round(netLabsRevenue / completed) : 0;
@@ -82,13 +95,24 @@ export default function LabsPerformance({ encounters = [], onSelectDoctor }) {
       collectedReceipts,
       refunds,
       netLabsRevenue,
+      opdRevenue,
+      opdCount: opdEncounters.length,
+      opdCompleted,
+      ipdRevenue,
+      ipdCount: ipdEncounters.length,
+      ipdCompleted,
       walkInRevenue,
       walkInCount: walkInEncounters.length,
-      doctorOrderRevenue,
-      doctorOrderCount: doctorOrderEncounters.length,
-      packagePaidCount,
-      profilesCount,
-      singleTestsCount,
+      walkInCompleted,
+      packagePaidRevenue,
+      packagePaidCount: packageEncounters.length,
+      packageCompleted,
+      singleTestsRevenue,
+      singleTestsCount: singleTestEncounters.length,
+      singleTestsCompleted,
+      profilesRevenue,
+      profilesCount: profileEncounters.length,
+      profilesCompleted,
       completionRate,
       avgReceiptValue
     };

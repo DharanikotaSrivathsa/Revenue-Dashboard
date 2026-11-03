@@ -36,8 +36,8 @@ export default function HmsTab({ data }) {
           <HBarList data={hms.byLocation.map((r) => ({ ...r }))} format={formatNum} color="from-teal-400 to-teal-600" />
         </Panel>
 
-        <Panel className="bg-gradient-to-br from-white to-amber-50/60" title="Orders by Visit Type" subtitle="OPD, IPD and ER" icon={Stethoscope}>
-          <DonutBlock data={hms.byVisitType} format={formatNum} centerLabel="HMS orders" />
+        <Panel className="bg-gradient-to-br from-white to-amber-50/60" title="Orders by Customer Stream" subtitle="OPD, IPD and Walk-in" icon={Stethoscope}>
+          <DonutBlock data={hms.byVisitType} format={formatNum} centerLabel="Lab orders" />
         </Panel>
       </div>
     </div>

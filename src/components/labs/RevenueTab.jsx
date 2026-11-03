@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import {
   IndianRupee, Wallet, Tag, RotateCcw, Banknote, Hourglass, TrendingUp, PieChart as PieIcon,
-  Layers, ListOrdered, Receipt, UserCheck, Package, ShieldCheck,
+  Layers, ListOrdered, Receipt, UserCheck, Package, ShieldCheck, BedDouble, Stethoscope,
 } from "lucide-react";
 import { formatMoney } from "../../data/mockData";
 import { KpiCard, Panel, SectionHeading, DonutBlock, NoData } from "./LabUi";
@@ -153,51 +153,77 @@ export default function RevenueTab({ stats, data }) {
         </Panel>
       </div>
 
-      {/* Sources & integrity */}
-      <SectionHeading eyebrow="Attribution" title="Order sources & accounting integrity" />
+      {/* Customer Streams & Attribution */}
+      <SectionHeading eyebrow="Customer Streams" title="OPD, IPD & Walk-in Revenue Reconciliation" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SourceCard
-          badge="source = MANUAL" badgeClass="bg-teal-50 text-teal-700 border-teal-200" icon={Receipt} iconClass="text-teal-600"
-          title="Walk-In Counter Bookings" text="Direct retail patient tests registered and settled at lab reception."
+          badge="Customer: OPD" badgeClass="bg-blue-50 text-blue-700 border-blue-200" icon={Stethoscope} iconClass="text-blue-600"
+          title="OPD Consultations" text="Diagnostic requisitions ordered by physicians during outpatient clinic consultations."
+          value={formatMoney(stats.opdRevenue)} valueClass="text-blue-700"
+          left={`${stats.opdCompleted} Settled (${stats.opdCount} Orders)`} right="Clinical Attributed" rightClass="text-blue-700"
+        />
+        <SourceCard
+          badge="Customer: IPD" badgeClass="bg-indigo-50 text-indigo-700 border-indigo-200" icon={BedDouble} iconClass="text-indigo-600"
+          title="IPD Inpatient Requisitions" text="Bedside diagnostic investigations ordered for admitted inpatient ward/ICU patients."
+          value={formatMoney(stats.ipdRevenue)} valueClass="text-indigo-700"
+          left={`${stats.ipdCompleted} Settled (${stats.ipdCount} Orders)`} right="Inpatient Billed" rightClass="text-indigo-700"
+        />
+        <SourceCard
+          badge="Customer: Walk-in" badgeClass="bg-teal-50 text-teal-700 border-teal-200" icon={Receipt} iconClass="text-teal-600"
+          title="Walk-In Counter Bookings" text="Direct retail investigations registered and settled immediately at laboratory reception."
           value={formatMoney(stats.walkInRevenue)} valueClass="text-teal-700"
-          left={`${stats.walkInCount} Receipts`} right="Counter Realized" rightClass="text-teal-700"
-        />
-        <SourceCard
-          badge="source = OPENMRS_ORDER" badgeClass="bg-blue-50 text-blue-700 border-blue-200" icon={UserCheck} iconClass="text-blue-600"
-          title="Hospital Doctor Prescriptions" text="Clinical lab requisitions ordered during physician OPD consultations."
-          value={formatMoney(stats.doctorOrderRevenue)} valueClass="text-blue-700"
-          left={`${stats.doctorOrderCount} Physician Orders`} right="Clinical Attributed" rightClass="text-blue-700"
-        />
-        <SourceCard
-          badge="lab_order_package_usage" badgeClass="bg-purple-50 text-purple-700 border-purple-200" icon={Package} iconClass="text-purple-600"
-          title="Prepaid Health Package Profiles" text="Billed at ₹0 at lab checkout. Revenue belongs to billing-engine package sales."
-          value={`${stats.packagePaidCount} Usages`} valueClass="text-purple-700"
-          left="Zero Double Count" right="Billing Engine GAAP" rightClass="text-purple-700"
+          left={`${stats.walkInCompleted} Settled (${stats.walkInCount} Receipts)`} right="Counter Realized" rightClass="text-teal-700"
         />
       </div>
 
-      <Panel title="Tests vs. Profile Bundles" subtitle="Aggregated strictly from checkout receipts to prevent duplicate revenue recognition" icon={ShieldCheck}>
+      <Panel title="Order Catalog: Individual Tests · Profiles · Packages" subtitle="Attributed strictly by catalog structure — fully reconciles to Net Labs Revenue" icon={ShieldCheck}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-gray-800 block">Single Test Orders</span>
-              <span className="text-[11px] text-gray-500">Priced at test.service_value MRP</span>
+          <div className="p-3.5 rounded-xl bg-teal-50/70 border border-teal-100 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-gray-800 block">Individual Tests</span>
+                <span className="text-[11px] text-gray-500">Standalone lab investigations</span>
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-teal-100 text-teal-800">
+                {stats.singleTestsCompleted} / {stats.singleTestsCount} Settled
+              </span>
             </div>
-            <span className="text-sm font-black text-teal-700">{stats.singleTestsCount} Receipts</span>
+            <div className="mt-2 pt-2 border-t border-teal-100/60 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-gray-500">Net Revenue:</span>
+              <span className="text-sm font-black text-teal-800">{formatMoney(stats.singleTestsRevenue)}</span>
+            </div>
           </div>
-          <div className="p-3 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-gray-800 block">Bundled Health Profiles</span>
-              <span className="text-[11px] text-gray-500">Single bundle tariff (profile.mrp)</span>
+
+          <div className="p-3.5 rounded-xl bg-purple-50/70 border border-purple-100 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-gray-800 block">Profile Bundles</span>
+                <span className="text-[11px] text-gray-500">Multi-test panels (Thyroid, Lipid, etc.)</span>
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-800">
+                {stats.profilesCompleted} / {stats.profilesCount} Settled
+              </span>
             </div>
-            <span className="text-sm font-black text-purple-700">{stats.profilesCount} Bundles</span>
+            <div className="mt-2 pt-2 border-t border-purple-100/60 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-gray-500">Net Revenue:</span>
+              <span className="text-sm font-black text-purple-800">{formatMoney(stats.profilesRevenue)}</span>
+            </div>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-gray-800 block">Diagnostic Completion</span>
-              <span className="text-[11px] text-gray-500">Settled ÷ total requisitions</span>
+
+          <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-gray-800 block">Doctor Portal Packages</span>
+                <span className="text-[11px] text-gray-500">Health packages from Doctor Portal</span>
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-800">
+                {stats.packageCompleted} / {stats.packagePaidCount} Settled
+              </span>
             </div>
-            <span className="text-sm font-black text-emerald-700">{stats.completionRate}%</span>
+            <div className="mt-2 pt-2 border-t border-indigo-100/60 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-gray-500">Net Revenue:</span>
+              <span className="text-sm font-black text-indigo-800">{formatMoney(stats.packagePaidRevenue)}</span>
+            </div>
           </div>
         </div>
       </Panel>
