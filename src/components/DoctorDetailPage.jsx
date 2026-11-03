@@ -204,7 +204,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               <DoccureDatePicker label="From date" value={draft.from} onChange={setFilter("from")} />
               <DoccureDatePicker label="To date" value={draft.to} onChange={setFilter("to")} />
               <DoccureDropdown label="Facility" icon={Building2} value={draft.facility} onChange={setFilter("facility")} options={[{ value: "All", label: `All facilities (${FACILITIES.length})` }, ...FACILITIES.map((f) => ({ value: f, label: f }))]} />
-              <DoccureDropdown label="Department" icon={Layers} value={draft.dept} onChange={setFilter("dept")} options={[{ value: "All", label: `All departments (${DEPARTMENTS.length})` }, ...DEPARTMENTS.map((d) => ({ value: d.name, label: d.name }))]} />
+              <DoccureDropdown label="Speciality" icon={Layers} value={draft.dept} onChange={setFilter("dept")} options={[{ value: "All", label: `All specialities (${DEPARTMENTS.length})` }, ...DEPARTMENTS.map((d) => ({ value: d.name, label: d.name }))]} />
               <DoccureDropdown label="Doctor" icon={Stethoscope} value={doctor.name} onChange={() => {}} disabled options={[{ value: doctor.name, label: doctor.name }]} />
               <DoccureDropdown label="Payment channel" icon={CreditCard} value={draft.payMode} onChange={setFilter("payMode")} options={[{ value: "All", label: "All channels" }, ...PAY_MODES.map((m) => ({ value: m.id, label: m.label }))]} />
             </div>
@@ -228,7 +228,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
       {isEmpty ? (
         <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-14 text-center space-y-2">
           <p className="text-sm font-bold text-slate-800">No activity for {doctor.name} with these filters</p>
-          <p className="text-xs text-slate-500">Try a wider date range or set Facility, Department and Payment channel back to All.</p>
+          <p className="text-xs text-slate-500">Try a wider date range or set Facility, Speciality and Payment channel back to All.</p>
         </div>
       ) : (
         <>
@@ -258,7 +258,7 @@ export default function DoctorDetailPage({ doctorName, encounters = [], defaultF
               <MiniStat label="Outstanding" value={formatMoney(r.outstanding)} tone="text-amber-700" />
             </div>
             <p className="text-[11px] text-slate-400 -mt-1">
-              Package and IPD revenue appear only for bills booked against this doctor (IPD = admissions this doctor initiated). Lab and pharmacy sales on ordinary bills belong to those departments and are not counted here.
+              Package and IPD revenue appear only for bills booked against this doctor (IPD = admissions this doctor initiated). Lab and pharmacy sales on ordinary bills belong to those specialities and are not counted here.
             </p>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">

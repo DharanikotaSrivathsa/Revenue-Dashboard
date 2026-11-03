@@ -97,7 +97,7 @@ export default function OrdersTab({ data }) {
           </div>
         </Panel>
 
-        <Panel className="bg-gradient-to-br from-white to-teal-50/60" title="Department-wise Orders" subtitle="Tests ordered per lab department" icon={Layers}>
+        <Panel className="bg-gradient-to-br from-white to-teal-50/60" title="Speciality-wise Orders" subtitle="Tests ordered per lab speciality" icon={Layers}>
           <div className="h-64">
             {orders.byDept.length === 0 ? (
               <NoData />

@@ -28,7 +28,7 @@ export default function Sidebar({
   const mainNav = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "doctors", label: "Doctor Performance", icon: Stethoscope },
-    { id: "departments", label: "Department Performance", icon: Building2 },
+    { id: "departments", label: "Speciality Performance", icon: Building2 },
     { id: "labs", label: "Labs Performance", icon: FlaskConical },
     { id: "pharmacy", label: "Pharmacy Performance", icon: Pill },
   ];

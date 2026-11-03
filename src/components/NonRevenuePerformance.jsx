@@ -367,7 +367,7 @@ export default function NonRevenuePerformance({ encounters, onSelectDoctor }) {
                 </h3>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                Clinical orders, procedures performed, and inter-departmental referrals. Non-monetary counts only.
+                Clinical orders, procedures performed, and cross-speciality referrals. Non-monetary counts only.
               </p>
             </div>
             <div className="text-[11px] font-medium text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">

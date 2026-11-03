@@ -18,7 +18,7 @@ export default function Navbar({ activeSection, onSelectSection, hasApplied, enc
   const sections = [
     { id: "overview", label: "Hospital Overview", icon: Building2, tag: "Executive" },
     { id: "doctors", label: "Doctor Performance", icon: Stethoscope, tag: "Scorecards" },
-    { id: "departments", label: "Departments", icon: Layers, tag: "5 Specialties" },
+    { id: "departments", label: "Specialities", icon: Layers, tag: "5 Specialities" },
     { id: "labs", label: "Labs Performance", icon: FlaskConical, tag: "Diagnostics" },
     { id: "pharmacy", label: "Pharmacy Performance", icon: Pill, tag: "Dispensary" },
   ];

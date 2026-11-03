@@ -83,7 +83,7 @@ export function buildServiceIndex(scoped, doctorName) {
     if (l.doctor === doctorName) it.mine.push(l);
     map.set(key, it);
   });
-  const doctorNames = [...new Set(scoped.map((e) => e.doctorName))];
+  const doctorNames = [...new Set(scoped.map((e) => e.doctorName))].filter((n) => n && !n.includes("Walk-in") && !n.includes("Unassigned"));
   return [...map.values()].map((it) => {
     const units = sum(it.mine, (l) => l.units);
     const revenue = sum(it.mine, (l) => l.revenue);

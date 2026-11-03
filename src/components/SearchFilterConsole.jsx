@@ -60,7 +60,7 @@ export default function SearchFilterConsole({
   ];
 
   const departmentOptions = [
-    { value: "All", label: `All Departments (${DEPARTMENTS.length})` },
+    { value: "All", label: `All Specialities (${DEPARTMENTS.length})` },
     ...DEPARTMENTS.map(d => ({ value: d.name, label: d.name }))
   ];
 
@@ -117,7 +117,7 @@ export default function SearchFilterConsole({
               )}
             </div>
             <p className="text-[11px] text-gray-500 font-medium">
-              Filter records across hospital branches, departments, doctors, and dates. Click Search to view data.
+              Filter records across hospital branches, specialities, doctors, and dates. Click Search to view data.
             </p>
           </div>
         </div>
@@ -172,9 +172,9 @@ export default function SearchFilterConsole({
               options={facilityOptions}
             />
 
-            {/* Field 4: Reusable Specialty Department Dropdown */}
+            {/* Field 4: Reusable Speciality Dropdown */}
             <DoccureDropdown
-              label="Specialty Department"
+              label="Speciality"
               icon={Layers}
               value={filters.dept}
               onChange={(val) => handleFieldChange("dept", val)}

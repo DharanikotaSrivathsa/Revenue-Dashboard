@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 
 export const metadata = {
   title: "Doccure HMS | Doctor Performance & Multi-Entity Hospital Intelligence",
-  description: "Enterprise clinical governance, physician scorecards, department analytics, lab operations, and pharmacy revenue intelligence system",
+  description: "Enterprise clinical governance, physician scorecards, speciality analytics, lab operations, and pharmacy revenue intelligence system",
 };
 
 export default function RootLayout({ children }) {

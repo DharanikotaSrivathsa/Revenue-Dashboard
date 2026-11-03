@@ -176,7 +176,7 @@ export default function Home() {
       rows = docNonRev.map(d => ({
         DoctorId: d.doctorId,
         DoctorName: d.doctorName,
-        Department: d.department,
+        Speciality: d.department,
         Facility: d.facility,
         TotalPatientVisits: d.totalPatientVisits,
         UniquePatientsById: d.uniquePatients,
@@ -199,7 +199,7 @@ export default function Home() {
       rows = filteredEncounters.map(e => ({
         Date: e.date,
         EncounterId: e.id,
-        Department: e.department,
+        Speciality: e.department,
         Facility: e.facility,
         Doctor: e.doctorName,
         Patient: e.patientName,
@@ -216,7 +216,7 @@ export default function Home() {
         Date: e.date,
         EncounterId: e.id,
         Doctor: e.doctorName,
-        Department: e.department,
+        Speciality: e.department,
         Patient: e.patientName,
         LabGross: e.labGross,
         LabDiscount: e.labDiscount,
@@ -229,7 +229,7 @@ export default function Home() {
         Date: e.date,
         EncounterId: e.id,
         Doctor: e.doctorName,
-        Department: e.department,
+        Speciality: e.department,
         Patient: e.patientName,
         DrugCategory: e.drugCategory,
         PharmGross: e.pharmGross,
@@ -243,7 +243,7 @@ export default function Home() {
         Date: e.date,
         EncounterId: e.id,
         Doctor: e.doctorName,
-        Department: e.department,
+        Speciality: e.department,
         Facility: e.facility,
         Patient: e.patientName,
         ConsultationFee: e.consultNet,
@@ -359,7 +359,7 @@ export default function Home() {
                 />
               )}
 
-              {/* Section 3: Department Performance */}
+              {/* Section 3: Speciality Performance */}
               {activeSection === "departments" && (
                 <DepartmentPerformance
                   encounters={filteredEncounters}

@@ -347,7 +347,7 @@ export default function PatientVolumePage({ encounters = [], onSelectDoctor }) {
                 <th className="py-3 px-4">Encounter ID</th>
                 <th className="py-3 px-4">Visit Date</th>
                 <th className="py-3 px-4">Doctor</th>
-                <th className="py-3 px-4">Department</th>
+                <th className="py-3 px-4">Speciality</th>
                 <th className="py-3 px-4 text-center">Visit Classification</th>
               </tr>
             </thead>

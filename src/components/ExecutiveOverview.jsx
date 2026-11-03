@@ -101,6 +101,7 @@ export default function ExecutiveOverview({
   const doctorLeaderboard = useMemo(() => {
     const map = {};
     encounters.forEach((x) => {
+      if (x.doctorId === "DOC-WALKIN" || x.doctorName === "Direct Walk-in / Unassigned") return;
       if (!map[x.doctorName]) {
         map[x.doctorName] = {
           name: x.doctorName,

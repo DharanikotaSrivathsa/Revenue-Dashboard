@@ -32,9 +32,9 @@ export default function DoctorDashboardHeader({
       icon: Stethoscope
     },
     departments: {
-      title: "Departmental Clinical Analytics",
-      subtitle: "Cross-specialty performance, inpatient bed capacity, consult completions, and service line revenue distributions.",
-      badge: "5 Specialty Departments",
+      title: "Speciality Clinical Analytics",
+      subtitle: "Cross-speciality performance, inpatient bed capacity, consult completions, and service line revenue distributions.",
+      badge: "5 Specialities",
       icon: Layers
     },
     labs: {

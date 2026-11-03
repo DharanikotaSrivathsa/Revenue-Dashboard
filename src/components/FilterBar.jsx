@@ -97,7 +97,7 @@ export default function FilterBar({
               </span>
             </div>
             <p className="text-[11px] text-slate-400">
-              Set hospital branch, clinical department, date range, or doctor parameters
+              Set hospital branch, clinical speciality, date range, or doctor parameters
             </p>
           </div>
         </div>
@@ -185,20 +185,20 @@ export default function FilterBar({
               </select>
             </div>
 
-            {/* Specialty Department */}
+            {/* Speciality */}
             <div className={`bg-white p-3 rounded-2xl border transition-colors shadow-2xs ${
               filters.dept !== "All" ? "border-blue-500 ring-2 ring-blue-500/10" : "border-slate-200 hover:border-blue-400"
             }`}>
               <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1.5">
                 <Layers className="w-3.5 h-3.5 text-purple-600" />
-                <span>Specialty Dept</span>
+                <span>Speciality</span>
               </label>
               <select
                 value={filters.dept}
                 onChange={(e) => onChangeFilter("dept", e.target.value)}
                 className="w-full text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer"
               >
-                <option value="All">All Departments (5)</option>
+                <option value="All">All Specialities (5)</option>
                 {DEPARTMENTS.map(d => (
                   <option key={d.name} value={d.name}>{d.name}</option>
                 ))}
@@ -273,7 +273,7 @@ export default function FilterBar({
                 className="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>❤️</span>
-                <span>Cardiology Specialty</span>
+                <span>Cardiology Speciality</span>
               </button>
               <button
                 onClick={() => onApplyPreset("unpaid")}

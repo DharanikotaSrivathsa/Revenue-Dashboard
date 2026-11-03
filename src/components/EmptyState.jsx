@@ -59,7 +59,7 @@ export default function EmptyState({ onApply, onApplyPreset, onSelectDoctor }) {
           <div>
             <h3 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
-              Explore Enterprise Healthcare Departments
+              Explore Enterprise Healthcare Specialities
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Select a clinical service line to immediately query and compute practice intelligence.

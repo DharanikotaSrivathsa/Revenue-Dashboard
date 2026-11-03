@@ -18,6 +18,7 @@ export const DEPARTMENTS = [
   { name: "Gynecology", head: "Dr. Kiran Reddy", bedCapacity: 40, opdCount: 2 },
   { name: "Dermatology", head: "Dr. Priya Shah", bedCapacity: 10, opdCount: 2 }
 ];
+export const SPECIALITIES = DEPARTMENTS;
 
 export const LAB_TEST_TYPES = [
   { code: "L01", name: "Complete Blood Count (CBC)", category: "Hematology", basePrice: 450, avgTurnaroundMins: 45 },
@@ -149,15 +150,6 @@ export function generateEncounters() {
       }
       const procNet = procStatus === "Completed" ? Math.max(0, procGross - procDiscount - procRefund) : 0;
 
-      const totalNet = consultNet + labNet + pharmNet + procNet;
-
-      // Payment allocation
-      const payRate = totalNet > 0 ? pick([1, 1, 1, 0.75, 0.5, 0]) : 0;
-      const collected = Math.round(totalNet * payRate);
-      const outstanding = Math.max(0, totalNet - collected);
-      const paymentStatus = totalNet === 0 ? "Paid" : (collected === totalNet ? "Paid" : (collected > 0 ? "Partial" : "Unpaid"));
-      const payMode = pick(["UPI", "Card", "Cash", "Insurance", "Bank transfer"]);
-
       // Referrals made (Clinical Workflow)
       const hasReferral = rng() < 0.28;
       const otherDepts = ["Cardiology", "Orthopedics", "General Medicine", "Gynecology", "Dermatology"].filter(d => d !== doc.dept);
@@ -167,13 +159,46 @@ export function generateEncounters() {
       // Actual inpatient admissions initiated by doctor during OPD consultation
       const admissionInitiated = consultStatus === "Completed" && rng() < 0.14;
 
+      // Check if this encounter is a direct walk-in (direct lab or pharmacy counter with NO doctor consult)
+      const isDirectWalkIn = (labSource === "MANUAL" || pharmChannel === "WALK_IN") && !admissionInitiated && !(hasProcedure && procStatus === "Completed");
+
+      // For direct walk-ins: zero doctor consultation fees, unassigned physician, pure departmental counter revenue
+      const effectiveConsultStatus = isDirectWalkIn ? "N/A" : consultStatus;
+      const effectiveConsultFee = isDirectWalkIn ? 0 : consultFee;
+      const effectiveConsultDiscount = isDirectWalkIn ? 0 : consultDiscount;
+      const effectiveConsultRefund = isDirectWalkIn ? 0 : consultRefund;
+      const effectiveConsultNet = isDirectWalkIn ? 0 : consultNet;
+
+      const effectiveHasProcedure = isDirectWalkIn ? false : hasProcedure;
+      const effectiveProcStatus = isDirectWalkIn ? "Not performed" : procStatus;
+      const effectiveProcGross = isDirectWalkIn ? 0 : procGross;
+      const effectiveProcDiscount = isDirectWalkIn ? 0 : procDiscount;
+      const effectiveProcRefund = isDirectWalkIn ? 0 : procRefund;
+      const effectiveProcNet = isDirectWalkIn ? 0 : procNet;
+
+      const effectiveDoctorId = isDirectWalkIn ? "DOC-WALKIN" : doc.id;
+      const effectiveDoctorName = isDirectWalkIn ? "Direct Walk-in / Unassigned" : doc.name;
+      const effectiveHasReferral = isDirectWalkIn ? false : hasReferral;
+      const effectiveReferralToDept = isDirectWalkIn ? null : referralToDept;
+      const effectiveAdmissionInitiated = isDirectWalkIn ? false : admissionInitiated;
+
+      const totalNet = effectiveConsultNet + labNet + pharmNet + effectiveProcNet;
+
+      // Payment allocation
+      const payRate = totalNet > 0 ? pick([1, 1, 1, 0.75, 0.5, 0]) : 0;
+      const collected = Math.round(totalNet * payRate);
+      const outstanding = Math.max(0, totalNet - collected);
+      const paymentStatus = totalNet === 0 ? "Paid" : (collected === totalNet ? "Paid" : (collected > 0 ? "Partial" : "Unpaid"));
+      const payMode = pick(["UPI", "Card", "Cash", "Insurance", "Bank transfer"]);
+
       rawEncounters.push({
         tempId: encSeq++,
         date,
         day,
-        doctorId: doc.id,
-        doctorName: doc.name,
+        doctorId: effectiveDoctorId,
+        doctorName: effectiveDoctorName,
         department: doc.dept,
+        speciality: doc.dept,
         facility: doc.facility,
         patientId: patient.id,
         patientName: patient.name,
@@ -182,11 +207,11 @@ export function generateEncounters() {
         patientPhone: patient.phone,
         patientFresh: patient.fresh,
         // Consult
-        consultStatus,
-        consultFee,
-        consultDiscount,
-        consultRefund,
-        consultNet,
+        consultStatus: effectiveConsultStatus,
+        consultFee: effectiveConsultFee,
+        consultDiscount: effectiveConsultDiscount,
+        consultRefund: effectiveConsultRefund,
+        consultNet: effectiveConsultNet,
         // Lab
         hasLab,
         labStatus,
@@ -220,12 +245,12 @@ export function generateEncounters() {
         pharmGrossProfit,
         pharmMarginPct,
         // Procedure
-        hasProcedure,
-        procStatus,
-        procGross,
-        procDiscount,
-        procRefund,
-        procNet,
+        hasProcedure: effectiveHasProcedure,
+        procStatus: effectiveProcStatus,
+        procGross: effectiveProcGross,
+        procDiscount: effectiveProcDiscount,
+        procRefund: effectiveProcRefund,
+        procNet: effectiveProcNet,
         // Totals
         totalNet,
         collected,
@@ -233,9 +258,9 @@ export function generateEncounters() {
         paymentStatus,
         payMode,
         // Non-revenue pre-attributes
-        hasReferral,
-        referralToDept,
-        admissionInitiated
+        hasReferral: effectiveHasReferral,
+        referralToDept: effectiveReferralToDept,
+        admissionInitiated: effectiveAdmissionInitiated
       });
     }
   });
@@ -267,11 +292,14 @@ export function generateEncounters() {
     const lastVisit = priorCompleted[priorCompleted.length - 1];
     const sameDoctorRevisit = isReturning && lastVisit ? lastVisit.doctorId === item.doctorId : false;
 
+    // Direct counter walk-in encounters (pharmacy OTC or direct manual lab test) have no attending doctor
+    const isWalkIn = item.doctorId === "DOC-WALKIN";
+
     // Clinical Workflow (Deduplicated identifiers per encounter)
-    const rxOrderId = item.hasRx ? "RXO-" + String(index + 1).padStart(4, "0") : null;
-    const labOrderId = item.hasLab ? "LBO-" + String(index + 1).padStart(4, "0") : null;
+    const rxOrderId = (!isWalkIn && item.hasRx) ? "RXO-" + String(index + 1).padStart(4, "0") : null;
+    const labOrderId = (!isWalkIn && item.hasLab) ? "LBO-" + String(index + 1).padStart(4, "0") : null;
     const procedureCompleted = (item.hasProcedure && item.procStatus === "Completed") ? 1 : 0;
-    const referralId = item.hasReferral ? "REF-" + String(index + 1).padStart(4, "0") : null;
+    const referralId = (!isWalkIn && item.hasReferral) ? "REF-" + String(index + 1).padStart(4, "0") : null;
 
     // Hospital Operations (Inpatient admission initiated by originating doctor)
     const admissionId = item.admissionInitiated ? "ADM-" + String(index + 1).padStart(4, "0") : null;
@@ -279,16 +307,16 @@ export function generateEncounters() {
     const enriched = {
       ...item,
       id: encId,
-      encounterType: "OPD",
-      visitType,
-      isFollowUp,
-      followUpCompleted,
-      isNewPatient: isNew,
-      isReturningPatient: isReturning,
+      encounterType: isWalkIn ? "Walk-in" : "OPD",
+      visitType: isWalkIn ? "Direct Counter Service" : visitType,
+      isFollowUp: isWalkIn ? false : isFollowUp,
+      followUpCompleted: isWalkIn ? false : followUpCompleted,
+      isNewPatient: isWalkIn ? false : isNew,
+      isReturningPatient: isWalkIn ? false : isReturning,
       historicalVisitIndex: priorCompleted.length,
       previousDoctorId: lastVisit ? lastVisit.doctorId : null,
       previousDoctorName: lastVisit ? lastVisit.doctorName : null,
-      sameDoctorRevisit,
+      sameDoctorRevisit: isWalkIn ? false : sameDoctorRevisit,
       // Clinical Workflow
       rxOrderId,
       prescriptionsWritten: rxOrderId ? 1 : 0,
@@ -301,31 +329,35 @@ export function generateEncounters() {
       labReceiptNo: item.hasLab ? "REC-" + String(1000 + index + 1) : null,
       pharmInvoiceNo: item.hasRx ? "INV-" + String(2000 + index + 1) : null,
       // billing-engine Master Invoice Classification (6 Production Invoice Types)
-      invoiceType: item.admissionInitiated 
-        ? "IPD" 
-        : ((item.hasProcedure && item.procStatus === "Completed") 
-            ? "TREATMENT" 
-            : (item.isPackagePaid 
-                ? "PACKAGE" 
-                : (isNew && item.tempId % 5 === 0 
-                    ? "REGISTRATION" 
-                    : (item.tempId % 7 === 0 ? "SERVICE" : "CONSULTATION")))),
-      invoiceCreatedBy: item.admissionInitiated 
-        ? "clinsta-IPd" 
-        : ((item.hasProcedure && item.procStatus === "Completed") 
-            ? "BluadConsultation (TreatmentServiceImpl)" 
-            : (item.isPackagePaid 
-                ? "billing-engine (Prepaid Package)" 
-                : (isNew && item.tempId % 5 === 0 
-                    ? "BluadPatientRegistration" 
-                    : (item.tempId % 7 === 0 ? "billing-engine (Direct OPD Service)" : "BluadConsultation (ConsultationOrderServiceImpl)")))),
+      invoiceType: isWalkIn
+        ? "SERVICE"
+        : (item.admissionInitiated 
+            ? "IPD" 
+            : ((item.hasProcedure && item.procStatus === "Completed") 
+                ? "TREATMENT" 
+                : (item.isPackagePaid 
+                    ? "PACKAGE" 
+                    : (isNew && item.tempId % 5 === 0 
+                        ? "REGISTRATION" 
+                        : (item.tempId % 7 === 0 ? "SERVICE" : "CONSULTATION"))))),
+      invoiceCreatedBy: isWalkIn
+        ? "billing-engine (Direct Counter Sale)"
+        : (item.admissionInitiated 
+            ? "clinsta-IPd" 
+            : ((item.hasProcedure && item.procStatus === "Completed") 
+                ? "BluadConsultation (TreatmentServiceImpl)" 
+                : (item.isPackagePaid 
+                    ? "billing-engine (Prepaid Package)" 
+                    : (isNew && item.tempId % 5 === 0 
+                        ? "BluadPatientRegistration" 
+                        : (item.tempId % 7 === 0 ? "billing-engine (Direct OPD Service)" : "BluadConsultation (ConsultationOrderServiceImpl)"))))),
       // Service line used by the "Service" filter. First rule that matches wins:
       // inpatient admission > completed procedure (operation theatre) > counter/walk-in sale > outpatient.
       serviceType: item.admissionInitiated
         ? "IPD"
         : (item.hasProcedure && item.procStatus === "Completed")
           ? "OT"
-          : (item.labSource === "MANUAL" || item.pharmChannel === "WALK_IN")
+          : (isWalkIn || item.labSource === "MANUAL" || item.pharmChannel === "WALK_IN")
             ? "Walk-in"
             : "OPD",
       // Hospital Operations

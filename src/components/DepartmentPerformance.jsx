@@ -65,7 +65,7 @@ export default function DepartmentPerformance({ encounters, onSelectDoctor }) {
 
   return (
     <div className="space-y-6">
-      {/* Department Scorecard Cards */}
+      {/* Speciality Scorecard Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
         {deptStats.map((dept, idx) => (
           <div 
@@ -114,7 +114,7 @@ export default function DepartmentPerformance({ encounters, onSelectDoctor }) {
             <div>
               <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-blue-600" />
-                Department Yield by Service Stream
+                Speciality Yield by Service Stream
               </h3>
               <p className="text-xs text-slate-500">OPD Consult, Lab Diagnostics, Pharmacy, and Clinical Procedures</p>
             </div>
@@ -177,8 +177,8 @@ export default function DepartmentPerformance({ encounters, onSelectDoctor }) {
         {/* Department Revenue Contribution Share */}
         <div className="lg:col-span-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">Department Revenue Share</h3>
-            <p className="text-xs text-slate-500 mb-3">Specialty contribution to total hospital net</p>
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Speciality Revenue Share</h3>
+            <p className="text-xs text-slate-500 mb-3">Speciality contribution to total hospital net</p>
 
             <div className="py-2 flex items-center justify-center">
               <div className="relative w-36 h-36">
@@ -201,7 +201,7 @@ export default function DepartmentPerformance({ encounters, onSelectDoctor }) {
                         <span className="text-base font-black text-slate-900 leading-tight">
                           ₹{Math.round(total / 1000)}k
                         </span>
-                        <span className="text-[9px] font-bold uppercase text-slate-400">Total Depts</span>
+                        <span className="text-[9px] font-bold uppercase text-slate-400">Total Specialities</span>
                       </div>
                     </div>
                   );

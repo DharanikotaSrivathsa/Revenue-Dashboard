@@ -23,7 +23,7 @@ export default function TopHeader({
   const sectionBreadcrumbs = {
     overview: "Hospital Overview",
     doctors: "Doctor Performance",
-    departments: "Department Performance",
+    departments: "Speciality Performance",
     labs: "Labs Performance",
     pharmacy: "Pharmacy Performance"
   };

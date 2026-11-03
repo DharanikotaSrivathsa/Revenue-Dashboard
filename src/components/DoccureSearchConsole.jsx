@@ -39,7 +39,7 @@ export default function DoccureSearchConsole({
 
   // Popular specialties list (Doccure-inspired)
   const quickSpecialties = [
-    { name: "All Specialties", icon: "🏥", dept: "All" },
+    { name: "All Specialities", icon: "🏥", dept: "All" },
     { name: "General Medicine", icon: "🩺", dept: "General Medicine" },
     { name: "Cardiology", icon: "❤️", dept: "Cardiology" },
     { name: "Orthopedics", icon: "🦴", dept: "Orthopedics" },
@@ -70,7 +70,7 @@ export default function DoccureSearchConsole({
     activeTags.push({ key: "facility", label: `Branch: ${filters.facility}` });
   }
   if (filters.dept && filters.dept !== "All") {
-    activeTags.push({ key: "dept", label: `Specialty: ${filters.dept}` });
+    activeTags.push({ key: "dept", label: `Speciality: ${filters.dept}` });
   }
   if (filters.doctor && filters.doctor !== "All") {
     activeTags.push({ key: "doctor", label: `Doctor: ${filters.doctor}` });
@@ -132,7 +132,7 @@ export default function DoccureSearchConsole({
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 hover:bg-slate-100/70 rounded-xl transition-colors md:w-52 min-w-0 border border-slate-200/60">
             <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
             <div className="min-w-0 flex-1">
-              <span className="block text-[8px] font-bold uppercase tracking-wider text-slate-400">Specialty</span>
+              <span className="block text-[8px] font-bold uppercase tracking-wider text-slate-400">Speciality</span>
               <select
                 value={filters.dept}
                 onChange={(e) => {
@@ -141,7 +141,7 @@ export default function DoccureSearchConsole({
                 }}
                 className="w-full text-xs font-bold text-slate-900 bg-transparent outline-none cursor-pointer truncate"
               >
-                <option value="All">All Specialties ({DEPARTMENTS.length})</option>
+                <option value="All">All Specialities ({DEPARTMENTS.length})</option>
                 {DEPARTMENTS.map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
               </select>
             </div>
@@ -417,14 +417,14 @@ export default function DoccureSearchConsole({
               <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">
-                  Specialty Dept
+                  Speciality
                 </span>
                 <select
                   value={filters.dept}
                   onChange={(e) => onChangeFilter("dept", e.target.value)}
                   className="w-full text-xs font-bold text-slate-900 bg-transparent outline-none cursor-pointer truncate"
                 >
-                  <option value="All">All Specialties ({DEPARTMENTS.length})</option>
+                  <option value="All">All Specialities ({DEPARTMENTS.length})</option>
                   {DEPARTMENTS.map(d => (
                     <option key={d.name} value={d.name}>{d.name}</option>
                   ))}
@@ -476,7 +476,7 @@ export default function DoccureSearchConsole({
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs">
             <span className="text-[11px] font-bold text-blue-100 uppercase tracking-wider mr-1 flex items-center gap-1">
               <Flame className="w-3.5 h-3.5 text-cyan-200" />
-              Popular Specialties:
+              Popular Specialities:
             </span>
             {quickSpecialties.map(s => {
               const isActive = filters.dept === s.dept;

@@ -45,7 +45,7 @@ export default function DoctorCommercialMatrix({ encounters = [], onSelectDoctor
     const headers = [
       "Rank",
       "DoctorName",
-      "Department",
+      "Speciality",
       "Facility",
       "InvoicedRevenue",
       "RealizedCollections",
@@ -144,7 +144,7 @@ export default function DoctorCommercialMatrix({ encounters = [], onSelectDoctor
                     <ArrowUpDown className="w-3 h-3 text-gray-400" />
                   </div>
                 </th>
-                <th className="py-3 px-3">Specialty</th>
+                <th className="py-3 px-3">Speciality</th>
                 <th 
                   onClick={() => handleSort("invoicedRevenue")}
                   className="py-3 px-4 text-right cursor-pointer hover:bg-gray-100 transition-colors"

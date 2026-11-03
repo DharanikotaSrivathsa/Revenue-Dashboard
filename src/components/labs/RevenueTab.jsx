@@ -128,9 +128,9 @@ export default function RevenueTab({ stats, data }) {
         </Panel>
       </div>
 
-      {/* Department + test */}
+      {/* Speciality + test */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <Panel title="Revenue by Department" subtitle="Hematology, Biochemistry, Endocrinology and more" icon={Layers}>
+        <Panel title="Revenue by Speciality" subtitle="Hematology, Biochemistry, Endocrinology and more" icon={Layers}>
           <div className="h-64">
             {data.byDept.length === 0 ? (
               <NoData />

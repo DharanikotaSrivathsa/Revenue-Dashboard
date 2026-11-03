@@ -46,6 +46,8 @@ export function calculateCommercialAnalytics(encounters = []) {
   // 1. TOP PERFORMING DOCTORS (COMMERCIAL REVENUE LEADERBOARD)
   const doctorMap = {};
   encounters.forEach((e) => {
+    // Exclude direct walk-in pharmacy/lab counter receipts with no attending doctor
+    if (e.doctorId === "DOC-WALKIN" || e.doctorName === "Direct Walk-in / Unassigned") return;
     const docName = e.doctorName;
     if (!doctorMap[docName]) {
       doctorMap[docName] = {

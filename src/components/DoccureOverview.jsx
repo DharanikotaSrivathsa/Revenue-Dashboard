@@ -77,7 +77,7 @@ const TABS = [
   { id: "Payments", label: "Payments", icon: CreditCard, color: "#0d9488", activeBg: "#0f766e" },
   { id: "Patients", label: "Patients", icon: Users, color: "#6366f1", activeBg: "#4f46e5" },
   { id: "Doctors", label: "Doctors", icon: Stethoscope, color: "#0284c7", activeBg: "#0369a1" },
-  { id: "Departments", label: "Departments", icon: Building2, color: "#7c3aed", activeBg: "#6d28d9" },
+  { id: "Departments", label: "Specialities", icon: Building2, color: "#7c3aed", activeBg: "#6d28d9" },
   { id: "Labs", label: "Labs", icon: FlaskConical, color: "#e11d48", activeBg: "#be123c" },
   { id: "Pharmacy", label: "Pharmacy", icon: Pill, color: "#d97706", activeBg: "#b45309" }
 ];
@@ -410,7 +410,7 @@ export default function DoccureOverview({
       "Date",
       "Patient",
       "Type",
-      "Department",
+      "Speciality",
       "Doctor",
       "Billed",
       "Discount",
@@ -634,10 +634,10 @@ export default function DoccureOverview({
             <DoccureDropdown
               compact
               active={draft.dept !== "All"}
-              label="Department"
+              label="Speciality"
               value={draft.dept}
               onChange={set("dept")}
-              options={[{ value: "All", label: "All Departments" }, ...DEPARTMENTS.map((d) => ({ value: d.name, label: d.name }))]}
+              options={[{ value: "All", label: "All Specialities" }, ...DEPARTMENTS.map((d) => ({ value: d.name, label: d.name }))]}
             />
             <DoccureDropdown
               compact
@@ -733,7 +733,7 @@ export default function DoccureOverview({
           <AlertCircle className="w-12 h-12 text-slate-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-900">No hospital records match these criteria</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try adjusting your date range, clearing specific filters, or resetting back to all departments and doctors.
+            Try adjusting your date range, clearing specific filters, or resetting back to all specialities and doctors.
           </p>
           <button
             onClick={reset}
@@ -842,7 +842,7 @@ export default function DoccureOverview({
                   Clinical Workload & Patient Volume
                 </span>
                 <span className="text-xs text-slate-500 font-medium">
-                  {cur.activeDoctors} Active Doctors across {cur.activeDepartments} Departments
+                  {cur.activeDoctors} Active Doctors across {cur.activeDepartments} Specialities
                 </span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -874,10 +874,10 @@ export default function DoccureOverview({
                   deltaVal={prev ? delta(cur.activeDoctors, prev.activeDoctors) : null}
                 />
                 <PremiumStatCard
-                  kicker="SPECIALTIES"
-                  label="Clinical Departments"
-                  value={`${formatNum(cur.activeDepartments)} Specialty Units`}
-                  subtext="Multi-facility department network"
+                  kicker="SPECIALITIES"
+                  label="Clinical Specialities"
+                  value={`${formatNum(cur.activeDepartments)} Speciality Units`}
+                  subtext="Multi-facility speciality network"
                   icon={Building2}
                   tone="rose"
                   deltaVal={prev ? delta(cur.activeDepartments, prev.activeDepartments) : null}
@@ -966,7 +966,7 @@ export default function DoccureOverview({
               <Section
                 accent={accent}
                 title="Hospital Revenue Performance & Financial Breakdown"
-                subtitle="Reconciliation of gross billing, concessions, refunds, and departmental streams"
+                subtitle="Reconciliation of gross billing, concessions, refunds, and speciality streams"
               >
                 {/* Revenue Streams & Reconciliation Pipeline */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1052,8 +1052,8 @@ export default function DoccureOverview({
 
                   <Card
                     accent={accent}
-                    title="Department Revenue Ranking"
-                    subtitle="Click any department bar to filter and drill down"
+                    title="Speciality Revenue Ranking"
+                    subtitle="Click any speciality bar to filter and drill down"
                   >
                     <HBars
                       money
@@ -1064,7 +1064,7 @@ export default function DoccureOverview({
 
                   <Card
                     accent={accent}
-                    title="Service Revenue Matrix by Department"
+                    title="Service Revenue Matrix by Speciality"
                     subtitle="Consultations, procedures, labs and pharmacy breakdown"
                   >
                     <BarSeries stacked money data={deptSorted.map((d) => ({ ...d }))} series={SERVICE_SERIES} />
@@ -1193,7 +1193,7 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  <Card accent={accent} title="Patient Visits by Department" subtitle="Click bar to view department">
+                  <Card accent={accent} title="Patient Visits by Speciality" subtitle="Click bar to view speciality">
                     <HBars
                       data={[...cur.departments]
                         .sort((a, b) => b.visits - a.visits)
@@ -1303,7 +1303,7 @@ export default function DoccureOverview({
                         <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                           <tr>
                             <th className="py-3 px-3">Physician</th>
-                            <th className="py-3 px-3">Department</th>
+                            <th className="py-3 px-3">Speciality</th>
                             <th className="py-3 px-3 text-right">Encounters</th>
                             <th className="py-3 px-3 text-right">Revenue</th>
                             <th className="py-3 px-3 text-right">Collections</th>
@@ -1377,20 +1377,20 @@ export default function DoccureOverview({
               </Section>
             )}
 
-            {/* TAB 5: DEPARTMENTS */}
+            {/* TAB 5: DEPARTMENTS / SPECIALITIES */}
             {tab === "Departments" && (
               <Section
                 accent={accent}
-                title="Specialty Department Operations & Clinical Volumes"
-                subtitle="Clinical encounter volume, revenue attribution, and procedural workload by medical specialty"
+                title="Speciality Operations & Clinical Volumes"
+                subtitle="Clinical encounter volume, revenue attribution, and procedural workload by medical speciality"
               >
                 <Strip
                   accent={accent}
                   items={[
-                    { label: "Active Departments", value: formatNum(cur.activeDepartments) },
+                    { label: "Active Specialities", value: formatNum(cur.activeDepartments) },
                     { label: "Patient Encounters", value: formatNum(sumOf(cur.departments, "visits")) },
                     { label: "Unique Patients", value: formatNum(pt.unique) },
-                    { label: "Department Net Revenue", value: formatMoney(sumOf(cur.departments, "net")), tone: "text-blue-700" },
+                    { label: "Speciality Net Revenue", value: formatMoney(sumOf(cur.departments, "net")), tone: "text-blue-700" },
                     { label: "Collections", value: formatMoney(sumOf(cur.departments, "collected")), tone: "text-teal-700" },
                     { label: "Outstanding", value: formatMoney(sumOf(cur.departments, "outstanding")), tone: "text-amber-700" },
                     { label: "Active Doctors", value: formatNum(cur.activeDoctors) },
@@ -1402,7 +1402,7 @@ export default function DoccureOverview({
                 />
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-                  <Card accent={accent} title="Department Patient Visits" subtitle="Click bar to drill down">
+                  <Card accent={accent} title="Speciality Patient Visits" subtitle="Click bar to drill down">
                     <HBars
                       data={[...cur.departments]
                         .sort((a, b) => b.visits - a.visits)
@@ -1411,7 +1411,7 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  <Card accent={accent} title="Department Net Revenue" subtitle="Click bar to drill down">
+                  <Card accent={accent} title="Speciality Net Revenue" subtitle="Click bar to drill down">
                     <HBars
                       money
                       data={deptSorted.map((d) => ({ name: d.name, value: d.net, color: COLORS.teal }))}
@@ -1419,7 +1419,7 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  <Card accent={accent} title="Department Revenue Contribution">
+                  <Card accent={accent} title="Speciality Revenue Contribution">
                     <Donut
                       money
                       centerLabel="Revenue"
@@ -1431,7 +1431,7 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  <Card accent={accent} title="Department Clinical Workload Matrix">
+                  <Card accent={accent} title="Speciality Clinical Workload Matrix">
                     <BarSeries
                       data={cur.departments}
                       series={[
@@ -1443,7 +1443,7 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  <Card accent={accent} title="Collections vs Outstanding by Department" className="xl:col-span-2">
+                  <Card accent={accent} title="Collections vs Outstanding by Speciality" className="xl:col-span-2">
                     <BarSeries
                       stacked
                       money
@@ -1455,11 +1455,11 @@ export default function DoccureOverview({
                     />
                   </Card>
 
-                  {/* Top Departments Cards */}
+                  {/* Top Specialities Cards */}
                   <Card
                     accent={accent}
-                    title="Department Breakdown & One-Click Drill Down"
-                    action={<ViewAll label="View all departments" onClick={() => onNavigateSection("departments")} />}
+                    title="Speciality Breakdown & One-Click Drill Down"
+                    action={<ViewAll label="View all specialities" onClick={() => onNavigateSection("departments")} />}
                     className="xl:col-span-2"
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1510,7 +1510,7 @@ export default function DoccureOverview({
               <Section
                 accent={accent}
                 title="Laboratory Operations & Diagnostic Investigation Analytics"
-                subtitle="Diagnostic test volume, status fulfillment, and departmental laboratory revenue"
+                subtitle="Diagnostic test volume, status fulfillment, and speciality laboratory revenue"
               >
                 <Strip
                   accent={accent}

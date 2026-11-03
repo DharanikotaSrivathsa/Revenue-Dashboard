@@ -303,7 +303,7 @@ export default function DoctorPerformance({ encounters, onSelectDoctor }) {
                   <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400 pointer-events-none" />
                   <input
                     type="text"
-                    placeholder="Search doctor, department, room..."
+                    placeholder="Search doctor, speciality, room..."
                     value={searchTerm}
                     onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                     className="w-full h-8 pl-9 pr-3 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none font-medium"
@@ -392,7 +392,7 @@ export default function DoctorPerformance({ encounters, onSelectDoctor }) {
                   <thead className="bg-gray-50 text-gray-500 uppercase tracking-wider font-bold text-[10px] border-b border-gray-200">
                     <tr>
                       <th className="py-3 px-4">Doctor</th>
-                      <th className="py-3 px-4">Department</th>
+                      <th className="py-3 px-4">Speciality</th>
                       <th className="py-3 px-4">Facility</th>
                       <th className="py-3 px-4 text-right">Consult Billed</th>
                       <th className="py-3 px-4 text-center">Consults</th>

@@ -81,7 +81,7 @@ export default function DoctorPerformanceMasterTable({ encounters = [], onSelect
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search physician name, department, branch..."
+                placeholder="Search physician name, speciality, branch..."
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                 className="w-full h-8 pl-9 pr-3 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 font-medium"
@@ -126,7 +126,7 @@ export default function DoctorPerformanceMasterTable({ encounters = [], onSelect
                     <div className="flex items-center gap-1">Doctor Name <ArrowUpDown className="w-3 h-3" /></div>
                   </th>
                   <th onClick={() => handleSort("department")} className="py-3 px-3.5 cursor-pointer hover:text-blue-600">
-                    <div className="flex items-center gap-1">Department <ArrowUpDown className="w-3 h-3" /></div>
+                    <div className="flex items-center gap-1">Speciality <ArrowUpDown className="w-3 h-3" /></div>
                   </th>
                   <th onClick={() => handleSort("totalPatientVisits")} className="py-3 px-3.5 text-right cursor-pointer hover:text-blue-600">
                     <div className="flex items-center justify-end gap-1">Total Visits <ArrowUpDown className="w-3 h-3" /></div>

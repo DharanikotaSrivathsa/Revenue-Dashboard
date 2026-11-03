@@ -36,7 +36,7 @@ export default function SearchPromptState({ onQuickLaunch }) {
               Search Parameters Required to Load Analytics
             </h2>
             <p className="text-sm text-gray-500 leading-relaxed font-medium">
-              Data is protected and calculated dynamically on-demand. Configure your date range, hospital facility, clinical department, or doctor in the search console above, then click <strong className="text-blue-600">Search Analytics & Show Data</strong> to reveal metrics.
+              Data is protected and calculated dynamically on-demand. Configure your date range, hospital facility, clinical speciality, or doctor in the search console above, then click <strong className="text-blue-600">Search Analytics & Show Data</strong> to reveal metrics.
             </p>
           </div>
 

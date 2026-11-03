@@ -107,7 +107,7 @@ export default function ConsultationsView({ encounters, onSelectDoctor }) {
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Search patient, doctor, department..."
+              placeholder="Search patient, doctor, speciality..."
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               className="w-full h-8 pl-9 pr-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none"
@@ -121,7 +121,7 @@ export default function ConsultationsView({ encounters, onSelectDoctor }) {
               <tr>
                 <th className="p-3">Date</th>
                 <th className="p-3">Physician</th>
-                <th className="p-3">Department</th>
+                <th className="p-3">Speciality</th>
                 <th className="p-3">Patient</th>
                 <th className="p-3 text-center">Status</th>
                 <th className="p-3 text-right">Gross Fee</th>
