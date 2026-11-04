@@ -14,6 +14,8 @@ import LabsPerformance from "../components/LabsPerformance";
 import PharmacyPerformance from "../components/PharmacyPerformance";
 import DoctorDetailPage from "../components/DoctorDetailPage";
 import { generateEncounters, formatMoney } from "../data/mockData";
+import { labServiceOf } from "../data/labAnalytics";
+import { pharmServiceOf } from "../data/pharmacyAnalytics";
 import { calculateDoctorNonRevenueMetrics } from "../data/nonRevenueCalculations";
 
 export default function Home() {
@@ -151,8 +153,8 @@ export default function Home() {
       const matchDept = appliedFilters.dept === "All" || e.department === appliedFilters.dept;
       const matchDoc = appliedFilters.doctor === "All" || e.doctorName === appliedFilters.doctor;
       const matchPayMode = !appliedFilters.payMode || appliedFilters.payMode === "All" || e.payMode === appliedFilters.payMode;
-      const matchService = !appliedFilters.service || appliedFilters.service === "All" || e.serviceType === appliedFilters.service;
-      
+      const matchService = !appliedFilters.service || appliedFilters.service === "All" || (activeSection === "labs" ? labServiceOf(e) : activeSection === "pharmacy" ? pharmServiceOf(e) : e.serviceType) === appliedFilters.service;
+
       const q = globalSearch.toLowerCase().trim();
       const matchGlobal = !q || 
         e.doctorName.toLowerCase().includes(q) ||
@@ -164,7 +166,7 @@ export default function Home() {
 
       return matchFrom && matchTo && matchFacility && matchDept && matchDoc && matchPayMode && matchService && matchGlobal;
     });
-  }, [masterEncounters, appliedFilters, hasApplied, globalSearch]);
+  }, [masterEncounters, appliedFilters, hasApplied, globalSearch, activeSection]);
 
   // Export CSV handler across all 5 modules
   const handleExportCSV = () => {

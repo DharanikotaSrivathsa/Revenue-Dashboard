@@ -52,15 +52,15 @@ export default function LabsPerformance({ encounters = [], onSelectDoctor }) {
     const netLabsRevenue = collectedReceipts - refunds;
 
     // Source Breakdown: OPD, IPD, Walk-in, and Doctor Portal Packages
-    const opdEncounters = labEncounters.filter(e => !e.admissionInitiated && e.serviceType !== "IPD" && e.labSource !== "MANUAL" && e.serviceType !== "Walk-in");
+    const opdEncounters = labEncounters.filter(e => e.labSource !== "MANUAL" && !e.admissionInitiated && e.serviceType !== "IPD");
     const opdRevenue = opdEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
     const opdCompleted = opdEncounters.filter(e => e.labStatus === "Completed").length;
 
-    const ipdEncounters = labEncounters.filter(e => e.admissionInitiated || e.serviceType === "IPD");
+    const ipdEncounters = labEncounters.filter(e => e.labSource !== "MANUAL" && (e.admissionInitiated || e.serviceType === "IPD"));
     const ipdRevenue = ipdEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
     const ipdCompleted = ipdEncounters.filter(e => e.labStatus === "Completed").length;
 
-    const walkInEncounters = labEncounters.filter(e => (e.labSource === "MANUAL" || e.serviceType === "Walk-in") && !e.admissionInitiated && e.serviceType !== "IPD");
+    const walkInEncounters = labEncounters.filter(e => e.labSource === "MANUAL");
     const walkInRevenue = walkInEncounters.reduce((s, e) => s + (e.labNet || 0), 0);
     const walkInCompleted = walkInEncounters.filter(e => e.labStatus === "Completed").length;
 

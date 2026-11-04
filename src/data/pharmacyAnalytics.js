@@ -37,6 +37,15 @@ const bump = (map, key, by = 1) => {
 };
 const trendRows = (m, labelFn = (k) => k) => Object.keys(m).sort().map((k) => ({ label: labelFn(k), value: m[k] }));
 
+// Pharmacy service line. Only counter (WALK_IN channel) sales are Walk-in, and every one of them is.
+// The encounter-level serviceType is also Walk-in when just the lab order was a counter order,
+// so for pharmacy such encounters fall back to OPD.
+export const pharmServiceOf = (e) => {
+  if (e.pharmChannel === "WALK_IN") return "Walk-in";
+  if (e.serviceType === "Walk-in") return "OPD";
+  return e.serviceType;
+};
+
 export function computePharmacyAnalytics(encounters = []) {
   const rx = encounters.filter((e) => e.hasRx);
 

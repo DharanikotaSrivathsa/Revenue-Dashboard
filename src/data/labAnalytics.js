@@ -46,6 +46,15 @@ const toRows = (map, keyName = "name") =>
 
 const weekLabel = (date) => `Wk ${Math.ceil(Number(date.slice(8, 10)) / 7)} · ${date.slice(5, 7)}/${date.slice(2, 4)}`;
 
+// Lab service line. Only counter ("MANUAL") lab orders are Walk-in, and every one of them is.
+// The encounter-level serviceType is also Walk-in when just the pharmacy sale was a counter sale,
+// so for labs such encounters fall back to OPD.
+export const labServiceOf = (e) => {
+  if (e.labSource === "MANUAL") return "Walk-in";
+  if (e.serviceType === "Walk-in") return "OPD";
+  return e.serviceType;
+};
+
 export function computeLabAnalytics(encounters = []) {
   const labs = encounters.filter((e) => e.hasLab);
 
@@ -98,10 +107,10 @@ export function computeLabAnalytics(encounters = []) {
     const cancelled = e.labStatus === "Cancelled";
 
     // 1. Customer classification
-    const customerType = (e.admissionInitiated || e.serviceType === "IPD")
-      ? "IPD"
-      : (e.labSource === "MANUAL" || e.serviceType === "Walk-in")
-        ? "Walk-in"
+    const customerType = e.labSource === "MANUAL"
+      ? "Walk-in"
+      : (e.admissionInitiated || e.serviceType === "IPD")
+        ? "IPD"
         : "OPD";
 
     // 2. Order catalog classification
