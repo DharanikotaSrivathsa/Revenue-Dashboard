@@ -127,12 +127,22 @@ export default function CollectionInsights({ invoices = [], accent }) {
                   </p>
                   <span className="text-sm font-semibold text-slate-900">{stats.rate}% collected</span>
                 </div>
-                <div className="mt-3 h-3 rounded-full bg-amber-200 overflow-hidden" role="img" aria-label={`${stats.rate}% of the billed amount has been received`}>
-                  <div className="h-full rounded-full bg-teal-600 transition-all duration-500" style={{ width: `${stats.rate}%` }} />
-                </div>
-                <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
+                {(() => {
+                  const billed = stats.totalCollected + stats.totalOutstanding;
+                  const pct = (v) => (billed > 0 ? (v / billed) * 100 : 0);
+                  return (
+                    <div className="mt-3 h-3 rounded-full bg-slate-100 overflow-hidden flex" role="img" aria-label={`${stats.rate}% of the billed amount has been received`}>
+                      <div className="h-full bg-teal-600 transition-all duration-500" style={{ width: `${pct(stats.totalCollected)}%` }} />
+                      <div className="h-full bg-amber-400 transition-all duration-500" style={{ width: `${pct(bills.partial.due)}%` }} />
+                      <div className="h-full bg-rose-500 transition-all duration-500" style={{ width: `${pct(bills.unpaid.due)}%` }} />
+                    </div>
+                  );
+                })()}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 mt-2">
                   <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal-600" /> Received</span>
-                  <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-300" /> Still to collect: <strong className="font-data text-slate-700">{formatMoney(stats.totalOutstanding)}</strong></span>
+                  <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-400" /> Part paid</span>
+                  <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500" /> Not paid yet</span>
+                  <span className="inline-flex items-center gap-1.5">Still to collect: <strong className="font-data text-slate-700">{formatMoney(stats.totalOutstanding)}</strong></span>
                 </div>
               </div>
 

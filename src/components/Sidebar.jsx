@@ -56,7 +56,7 @@ export default function Sidebar({
             <div className="min-w-0 animate-fadeIn">
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-base tracking-tight text-white">
-                  DOCCURE<span className="text-cyan-400">HMS</span>
+                  SRIVATHSA <span className="text-cyan-400">HMS</span>
                 </span>
                 <span className="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                   PRO

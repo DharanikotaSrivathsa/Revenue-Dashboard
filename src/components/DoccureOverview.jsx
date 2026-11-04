@@ -375,7 +375,7 @@ export default function DoccureOverview({
     net: (e) => e.totalNet,
     collected: (e) => e.collected,
     outstanding: (e) => e.outstanding,
-    visits: (e) => (e.consultStatus === "Completed" ? 1 : 0),
+    visits: (e) => (e.consultStatus === "Completed" || e.doctorId === "DOC-WALKIN" ? 1 : 0),
     lab: (e) => e.labNet || 0,
     pharmacy: (e) => e.pharmNet || 0
   });
@@ -848,9 +848,9 @@ export default function DoccureOverview({
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <PremiumStatCard
                   kicker="ENCOUNTERS"
-                  label="Completed Consultations"
+                  label="Patient Visits"
                   value={formatNum(pt.visits)}
-                  subtext={`${pt.perDay} avg encounters / day`}
+                  subtext={`${pt.perDay} avg visits / day · incl. ${formatNum(pt.counterVisits)} walk-in`}
                   icon={Users}
                   tone="sky"
                   deltaVal={prev ? delta(pt.visits, prev.patients.visits) : null}
@@ -1150,18 +1150,19 @@ export default function DoccureOverview({
               <Section
                 accent={accent}
                 title="Patient Demographics & Encounter Analytics"
-                subtitle="Cohort analysis derived from completed clinical encounters and verified patient identifiers"
+                subtitle="Cohort analysis of completed consultations and walk-in counter visits, using verified patient identifiers"
               >
                 <Strip
                   accent={accent}
                   items={[
-                    { label: "Total Completed Visits", value: formatNum(pt.visits) },
+                    { label: "Total Visits (consultations + walk-in)", value: formatNum(pt.visits) },
+                    { label: "Walk-in counter visits", value: formatNum(pt.counterVisits) },
                     { label: "Unique Patients", value: formatNum(pt.unique) },
                     { label: "New Patients (First visit)", value: formatNum(pt.newP) },
                     { label: "Returning Patients", value: formatNum(pt.returning) },
                     { label: "Avg Encounters / Day", value: pt.perDay }
                   ]}
-                  cols="grid-cols-2 md:grid-cols-5"
+                  cols="grid-cols-2 md:grid-cols-6"
                 />
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">

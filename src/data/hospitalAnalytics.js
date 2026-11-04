@@ -85,6 +85,51 @@ export function series(encounters, view, from, to, fields) {
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
 }
 
+// A patient visit is a completed doctor consultation or a walk-in counter visit (no doctor involved).
+// Doctor scorecards still count consultations only; the hospital view also counts counter customers.
+const isCounterVisit = (e) => e.doctorId === "DOC-WALKIN";
+function patientStats(encounters) {
+  const visits = encounters.filter((e) => e.consultStatus === "Completed" || isCounterVisit(e));
+  const ids = new Set(visits.map((e) => e.patientId));
+  // New vs returning. Consultations carry their own flag. A counter visit has none (by design), so it counts as
+  // returning when the patient had an earlier consultation (historicalVisitIndex) or an earlier counter visit here.
+  const seenAtCounter = new Set();
+  const kinds = [...visits]
+    .sort((x, y) => x.date.localeCompare(y.date) || x.id.localeCompare(y.id))
+    .map((e) => {
+      if (!isCounterVisit(e)) return e.isReturningPatient ? "returning" : "new";
+      const returning = e.historicalVisitIndex > 0 || seenAtCounter.has(e.patientId);
+      seenAtCounter.add(e.patientId);
+      return returning ? "returning" : "new";
+    });
+  const days = new Set(visits.map((e) => e.date)).size;
+  const perPatient = new Map();
+  visits.forEach((e) => perPatient.set(e.patientId, (perPatient.get(e.patientId) || 0) + 1));
+  const counts = [...perPatient.values()];
+  return {
+    visits: visits.length,
+    counterVisits: visits.filter(isCounterVisit).length,
+    unique: ids.size,
+    newP: kinds.filter((k) => k === "new").length,
+    returning: kinds.filter((k) => k === "returning").length,
+    perDay: days > 0 ? Number((visits.length / days).toFixed(2)) : 0,
+    ageBins: [
+      { name: "Under 30", test: (a) => a < 30 },
+      { name: "30–39", test: (a) => a >= 30 && a < 40 },
+      { name: "40–49", test: (a) => a >= 40 && a < 50 },
+      { name: "50–59", test: (a) => a >= 50 && a < 60 },
+      { name: "60+", test: (a) => a >= 60 }
+    ].map((b) => ({ name: b.name, value: visits.filter((e) => b.test(e.patientAge)).length })),
+    gender: ["Female", "Male"].map((g) => ({ name: g, value: visits.filter((e) => e.patientGender === g).length })),
+    frequency: [
+      { name: "1 visit", value: counts.filter((c) => c === 1).length },
+      { name: "2 visits", value: counts.filter((c) => c === 2).length },
+      { name: "3 visits", value: counts.filter((c) => c === 3).length },
+      { name: "4+ visits", value: counts.filter((c) => c >= 4).length }
+    ]
+  };
+}
+
 export function summariseHospital(encounters) {
   const rows = encounters.map((e) => ({ e, m: money(e) }));
   const billed = rows.filter((r) => r.m.billed > 0);
@@ -117,16 +162,17 @@ export function summariseHospital(encounters) {
   const refunded = billed.filter((r) => r.m.refund > 0);
 
   // Departments
-  const completed = encounters.filter((e) => e.consultStatus === "Completed");
+  const completed = encounters.filter((e) => e.consultStatus === "Completed" || isCounterVisit(e)); // visits incl. walk-in counter
   const departments = DEPARTMENTS.map((d) => {
     const es = encounters.filter((e) => e.department === d.name);
     const s = summariseDoctor(es);
     const net = sum(es, (e) => e.totalNet);
     const collected = sum(es, (e) => e.collected);
+    const deptVisits = es.filter((e) => e.consultStatus === "Completed" || isCounterVisit(e));
     return {
       name: d.name,
-      visits: s.nonRev.totalPatientVisits,
-      unique: s.nonRev.uniquePatients,
+      visits: deptVisits.length,
+      unique: new Set(deptVisits.map((e) => e.patientId)).size,
       net,
       collected,
       outstanding: sum(es, (e) => e.outstanding),
@@ -171,7 +217,8 @@ export function summariseHospital(encounters) {
 
   // Laboratory (imaging excluded)
   const nonImaging = (e) => (e.labTests || []).filter((t) => t.category !== "Radiology");
-  const labOrders = encounters.filter((e) => e.hasLab && e.labOrderId && nonImaging(e).length > 0);
+  // Hospital-wide: every lab order counts, including walk-in counter orders (those have no doctor order id by design)
+  const labOrders = encounters.filter((e) => e.hasLab && nonImaging(e).length > 0);
   const labTests = labOrders.flatMap((e) => nonImaging(e).map((t) => ({ t, status: e.labStatus })));
   const labDone = labOrders.filter((e) => e.labStatus === "Completed");
   const lab = {
@@ -258,16 +305,7 @@ export function summariseHospital(encounters) {
     lab,
     pharmacy,
     invoices,
-    patients: {
-      visits: base.nonRev.totalPatientVisits,
-      unique: base.nonRev.uniquePatients,
-      newP: base.nonRev.newPatients,
-      returning: base.nonRev.returningPatients,
-      perDay: base.nonRev.avgPatientsPerDay,
-      ageBins: base.ageBins,
-      gender: base.gender,
-      frequency: base.frequency
-    },
+    patients: patientStats(encounters),
     activeDoctors: doctors.length,
     activeDepartments: departments.length
   };
