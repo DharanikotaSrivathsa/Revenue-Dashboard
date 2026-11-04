@@ -101,9 +101,12 @@ export default function HospitalOverview({
           consults: 0
         };
       }
-      map[x.doctorName].net += x.totalNet;
-      map[x.doctorName].collected += x.collected;
-      map[x.doctorName].outstanding += x.outstanding;
+      const isWhole = (x.invoiceType === "PACKAGE" || x.invoiceType === "IPD") && x.serviceType !== "Walk-in";
+      const docNet = (x.consultNet || 0) + (x.procNet || 0) + (isWhole ? (x.labNet || 0) + (x.pharmNet || 0) : 0);
+      const docCol = x.totalNet > 0 ? Math.min(docNet, Math.round(x.collected * (docNet / x.totalNet))) : 0;
+      map[x.doctorName].net += docNet;
+      map[x.doctorName].collected += docCol;
+      map[x.doctorName].outstanding += Math.max(0, docNet - docCol);
       map[x.doctorName].patients.add(x.patientId);
       if (x.consultStatus === "Completed") map[x.doctorName].consults += 1;
     });

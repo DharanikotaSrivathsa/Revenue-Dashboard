@@ -24,8 +24,10 @@ const sum = (arr, fn) => arr.reduce((s, x) => s + fn(x), 0);
 const pct = (n, d) => (d > 0 ? Math.round((n / d) * 1000) / 10 : 0);
 
 function attribute(e) {
-  const isPkg = e.invoiceType === "PACKAGE";
-  const isIpd = e.invoiceType === "IPD";
+  // Walk-in patient consultations count into doctor revenue, but walk-in labs & pharmacy do NOT.
+  const isWalkIn = e.serviceType === "Walk-in";
+  const isPkg = !isWalkIn && e.invoiceType === "PACKAGE";
+  const isIpd = !isWalkIn && e.invoiceType === "IPD";
   const whole = isPkg || isIpd;
   const wholeKey = isIpd ? "ipd" : "package";
   const items = [];

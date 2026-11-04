@@ -28,6 +28,7 @@ import {
   ChevronLeft
 } from "lucide-react";
 import { DOCTORS, formatMoney, formatNum } from "../data/mockData";
+import { summarise } from "../data/doctorAnalytics";
 import NonRevenuePerformance from "./NonRevenuePerformance";
 import DoctorPerformanceMasterTable from "./DoctorPerformanceMasterTable";
 import DoctorProductsSold from "./DoctorProductsSold";
@@ -68,15 +69,16 @@ export default function DoctorPerformance({ encounters, onSelectDoctor }) {
       const labOrders = docEncounters.filter(e => e.hasLab).length;
       const prescriptionsWritten = docEncounters.filter(e => e.hasRx).length;
       const admissionsInitiated = docEncounters.filter(e => e.admissionInitiated).length;
-      const net = docEncounters.reduce((s, e) => s + e.totalNet, 0);
-      const collected = docEncounters.reduce((s, e) => s + e.collected, 0);
-      const outstanding = docEncounters.reduce((s, e) => s + e.outstanding, 0);
+      const s = summarise(docEncounters);
+      const net = s.revenue.net;
+      const collected = s.revenue.collected;
+      const outstanding = s.revenue.outstanding;
       const consultsCompleted = docEncounters.filter((e) => e.consultStatus === "Completed").length;
       const uniquePatients = new Set(docEncounters.map((e) => e.patientId)).size;
       const packageEncs = docEncounters.filter(e => e.invoiceType === "PACKAGE");
       const packageNet = packageEncs.reduce((s, e) => s + e.totalNet, 0);
       const packageCount = packageEncs.length;
-      const collectionRate = net > 0 ? Math.round((collected / net) * 100) : 0;
+      const collectionRate = s.revenue.collectionRate;
 
       // Payment mode breakdown for this doctor
       const payModes = {};

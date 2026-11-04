@@ -71,9 +71,14 @@ export function calculateCommercialAnalytics(encounters = []) {
     }
 
     const d = doctorMap[docName];
-    d.invoicedRevenue += e.totalNet || 0;
-    d.realizedCollections += e.collected || 0;
-    d.outstandingArrears += e.outstanding || 0;
+    // Doctor invoiced revenue is doctor's own services: consult + procedure + package/IPD, excluding walk-in/OPD labs & rx
+    const isWhole = (e.invoiceType === "PACKAGE" || e.invoiceType === "IPD") && e.serviceType !== "Walk-in";
+    const docNet = (e.consultNet || 0) + (e.procNet || 0) + (isWhole ? (e.labNet || 0) + (e.pharmNet || 0) : 0);
+    const docCol = e.totalNet > 0 ? Math.min(docNet, Math.round(e.collected * (docNet / e.totalNet))) : 0;
+
+    d.invoicedRevenue += docNet;
+    d.realizedCollections += docCol;
+    d.outstandingArrears += Math.max(0, docNet - docCol);
     d.consultBillings += e.consultNet || 0;
     d.procedureBillings += e.procNet || 0;
     d.labOrderYield += e.labNet || 0;
